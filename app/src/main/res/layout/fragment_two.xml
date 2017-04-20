@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="#fafafa">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="@color/main">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="压力检测"
+            android:textColor="@color/title_white"
+            android:textSize="20sp" />
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/hint_animation"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="216dp"
+            android:layout_height="216dp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/guide"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="133dp"
+            android:background="@drawable/guide_text"
+            android:layout_marginTop="13dp"
+            />
+
+
+    </LinearLayout>
+
+    
+    <com.bupt.heartarea.ui.RippleImageView
+        android:id="@+id/rippleImageView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#ffffff"
+        app:show_spacing_time="800"
+        app:imageViewWidth="50dp"
+        app:imageViewHeigth="50dp">
+
+    </com.bupt.heartarea.ui.RippleImageView>
+
+
+</LinearLayout>

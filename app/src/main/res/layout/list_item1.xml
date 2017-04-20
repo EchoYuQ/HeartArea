@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/item_iv_image"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:src="@drawable/user_bg"
+        android:layout_margin="10dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="10dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1.5">
+
+        <TextView
+            android:id="@+id/item_tv_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="2015-03-05"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/item_tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="13:11:20"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/item_tv_value"
+        android:textSize="23sp"
+        android:text="50"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="15dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/item_tv_suggetion"
+        android:textSize="13sp"
+        android:text="心率正常"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="35dp"
+        android:layout_weight="1.5"
+        />
+</LinearLayout>

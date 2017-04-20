@@ -1,0 +1,88 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_green"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="true"
+    >
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <com.bupt.heartarea.ui.MySurfaceView
+            android:id="@+id/preview"
+            android:layout_width="262dp"
+            android:layout_height="262dp"
+            android:layout_centerInParent="true"
+            android:background="#00000000"/>
+
+        <RelativeLayout
+            android:layout_width="270dp"
+            android:layout_height="270dp"
+            android:layout_centerInParent="true">
+
+            <com.bupt.heartarea.ui.ProgressWheel
+                android:id="@+id/pw_heartrate"
+                barWidth="9dp"
+                rimWidth="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true" />
+
+
+
+                <TextView
+                    android:id="@+id/tv_data_measure"
+                    style="@style/HeartRate"
+                    android:layout_width="140dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="00"
+                    android:textSize="70sp" />
+
+
+
+
+                    <ImageView
+                        android:id="@+id/iv_heart_measure"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+
+                        android:scaleType="centerInside"
+                        android:layout_toRightOf="@+id/tv_data_measure"
+                        android:layout_alignTop="@+id/tv_data_measure"
+                        />
+
+                    <TextView
+                        style="@style/HeartRate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tv_data_measure"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="-5dp"
+                        android:text="bps"
+                        android:textSize="30sp" />
+
+
+
+
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical" />
+
+
+</LinearLayout>

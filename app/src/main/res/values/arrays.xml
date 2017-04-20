@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pressure_array">
+        <item>活力十足</item>
+        <item>充满活力</item>
+        <item>活力尚可</item>
+        <item>有点疲惫</item>
+        <item>特别疲劳</item>
+    </string-array>
+
+    <string-array name="diet_array">
+        <item>清淡</item>
+        <item>均衡</item>
+        <item>营养</item>
+        <item>油腻</item>
+    </string-array>
+
+    <string-array name="weather_array">
+        <item>晴天</item>
+        <item>阴天</item>
+        <item>雾霾</item>
+        <item>小雨</item>
+        <item>暴雨</item>
+        <item>小雪</item>
+        <item>大雪</item>
+        <item>沙尘暴</item>
+        <item>冰雹</item>
+    </string-array>
+
+    <string-array name="health_array">
+        <item>健康</item>
+        <item>虚弱</item>
+        <item>生病</item>
+    </string-array>
+
+    <string-array name="sport_array">
+        <item>未运动</item>
+        <item>运动后</item>
+    </string-array>
+
+    <string-array name="nap_array">
+        <item>未午睡</item>
+        <item>午睡后</item>
+    </string-array>
+
+</resources>

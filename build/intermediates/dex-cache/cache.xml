@@ -3,57 +3,57 @@
 
     <item
         is-multidex="false"
-        jar="/Users/baidu/Downloads/xinxi-master/app/libs/gson-2.2.4.jar"
+        jar="/Users/baidu/Desktop/HeartArea/app/libs/gson-2.2.4.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.0"
         sha1="973e832af433b44c3ed11c426f2f390b29f3f3f8">
-        <dex dex="/Users/baidu/Downloads/xinxi-master/app/build/intermediates/pre-dexed/debug/gson-2.2.4_79e1ec4795bfdf9ac68ce621dda69946ef55d68e.jar" />
+        <dex dex="/Users/baidu/Desktop/HeartArea/app/build/intermediates/pre-dexed/debug/gson-2.2.4_699a5ec98343023eb9f009e412134195bf62f282.jar" />
     </item>
     <item
         is-multidex="false"
-        jar="/Users/baidu/Downloads/xinxi-master/app/libs/commons-math-2.2.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.0"
-        sha1="4877b85d388275f994a5cfc7eceb73a8045d3006">
-        <dex dex="/Users/baidu/Downloads/xinxi-master/app/build/intermediates/pre-dexed/debug/commons-math-2.2_0688387e0ded06621555ddb9e35660f1b2ad5e39.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/baidu/Downloads/xinxi-master/DatePicker/build/intermediates/bundles/default/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.0"
-        sha1="25a097f27c96c18e8801138a927ce12dbdec0057">
-        <dex dex="/Users/baidu/Downloads/xinxi-master/app/build/intermediates/pre-dexed/debug/classes_9b1a7952119305252498678657b818c23351ab91.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/baidu/Downloads/xinxi-master/hellocharts-library/build/intermediates/bundles/default/classes.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.0"
-        sha1="bbd3e1bfa973b65072cb0dd15c925243180fe5c5">
-        <dex dex="/Users/baidu/Downloads/xinxi-master/app/build/intermediates/pre-dexed/debug/classes_fab0f5cfefaca5af59ba4d6da2c1a25c37e98b9a.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/baidu/Downloads/xinxi-master/app/libs/achartengine-1.0.0.jar"
-        jumboMode="false"
-        optimize="true"
-        revision="25.0.0"
-        sha1="b2bb0af9f390c0edd4d7d95f613f38da3abe0144">
-        <dex dex="/Users/baidu/Downloads/xinxi-master/app/build/intermediates/pre-dexed/debug/achartengine-1.0.0_5eccdbea7eb2d175c42b3213b3edc6f303777328.jar" />
-    </item>
-    <item
-        is-multidex="false"
-        jar="/Users/baidu/Downloads/xinxi-master/app/libs/volley.jar"
+        jar="/Users/baidu/Desktop/HeartArea/app/libs/volley.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.0"
         sha1="4a94601db9bdfb7dc60efabb3dea91a0675f591d">
-        <dex dex="/Users/baidu/Downloads/xinxi-master/app/build/intermediates/pre-dexed/debug/volley_95d5ecb45c57c7f9617804e2b54d2ea85ef218e2.jar" />
+        <dex dex="/Users/baidu/Desktop/HeartArea/app/build/intermediates/pre-dexed/debug/volley_3a059af6d5adfbb58005930a2204900dc0fa2baf.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/baidu/Desktop/HeartArea/app/libs/commons-math-2.2.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="4877b85d388275f994a5cfc7eceb73a8045d3006">
+        <dex dex="/Users/baidu/Desktop/HeartArea/app/build/intermediates/pre-dexed/debug/commons-math-2.2_6b5789e0371c1b43306e85d2e4c8399391ef8a85.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/baidu/Desktop/HeartArea/DatePicker/build/intermediates/bundles/default/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="25a097f27c96c18e8801138a927ce12dbdec0057">
+        <dex dex="/Users/baidu/Desktop/HeartArea/app/build/intermediates/pre-dexed/debug/classes_d84a9951e239bd80bcc0986d9c0593333d58b992.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/baidu/Desktop/HeartArea/app/libs/achartengine-1.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="b2bb0af9f390c0edd4d7d95f613f38da3abe0144">
+        <dex dex="/Users/baidu/Desktop/HeartArea/app/build/intermediates/pre-dexed/debug/achartengine-1.0.0_59edaa055af74710c465f7e0216b920cdf21f2f3.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/Users/baidu/Desktop/HeartArea/hellocharts-library/build/intermediates/bundles/default/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.0"
+        sha1="bbd3e1bfa973b65072cb0dd15c925243180fe5c5">
+        <dex dex="/Users/baidu/Desktop/HeartArea/app/build/intermediates/pre-dexed/debug/classes_0239cfa8d9d69a81d23ed2102c7a74bf4643930d.jar" />
     </item>
 
 </items>

@@ -20,18 +20,18 @@
     <!-- 在SDCard中创建与删除文件权限 -->
     <application
         android:allowBackup="true"
+
         android:icon="@drawable/icon_main"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-        android:name="com.bupt.heartarea.activity.MainActivity"
-        android:launchMode="singleTask">
+            android:name="com.bupt.heartarea.activity.MainActivity"
+            android:launchMode="singleTask">
 
 
-
-    </activity>
+        </activity>
 
 
         <activity android:name="com.bupt.heartarea.activity.MeasureActivity">

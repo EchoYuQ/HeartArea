@@ -255,12 +255,40 @@ public class MonthHistoryFragment extends Fragment {
 
         @Override
         public void onColumnValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
-            Toast.makeText(getActivity(),"在"+ days[columnIndex]  + "日，您的心率最大值为" + value.getValueTop() + ",最小值为" + value.getValueBottom(), Toast.LENGTH_SHORT).show();
+            switch (GlobalData.currenttype)
+            {
+                case HEART_RATE:
+                    Toast.makeText(getActivity(),"在"+ days[columnIndex]  + "日，您的心率最大值为"
+                            + value.getValueTop() + ",最小值为" + value.getValueBottom(), Toast.LENGTH_SHORT).show();
+                    break;
+                case PRESSURE:
+                    Toast.makeText(getActivity(),"在"+ days[columnIndex]  + "日，您的疲劳度最大值为"
+                            + value.getValueTop() + ",最小值为" + value.getValueBottom(), Toast.LENGTH_SHORT).show();
+                    break;
+                case BLOOD_OXYGEN:
+                    Toast.makeText(getActivity(),"在"+ days[columnIndex]  + "日，您的血氧最大值为"
+                            + value.getValueTop() + ",最小值为" + value.getValueBottom(), Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
 
         @Override
         public void onPointValueSelected(int lineIndex, int pointIndex, PointValue value) {
-            Toast.makeText(getActivity(),"在"+ days[(int) value.getX()] + "日，您的心率平均值为" + value.getY(), Toast.LENGTH_SHORT).show();
+            switch (GlobalData.currenttype)
+            {
+                case HEART_RATE:
+                    Toast.makeText(getActivity(),"在"+ days[(int) value.getX()] + "日，您的心率平均值为"
+                            + value.getY(), Toast.LENGTH_SHORT).show();
+                    break;
+                case PRESSURE:
+                    Toast.makeText(getActivity(),"在"+ days[(int) value.getX()] + "日，您的疲劳度平均值为"
+                            + value.getY(), Toast.LENGTH_SHORT).show();
+                    break;
+                case BLOOD_OXYGEN:
+                    Toast.makeText(getActivity(),"在"+ days[(int) value.getX()] + "日，您的血氧平均值为"
+                            + value.getY(), Toast.LENGTH_SHORT).show();
+                    break;
+            }
         }
 
     }

@@ -158,7 +158,7 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
         mRbWeek = (RadioButton) findViewById(R.id.rb_week);
         mRbMonth = (RadioButton) findViewById(R.id.rb_month);
         // 解决Radiogroup初始化问题
-//        mRadioGroup.check(R.id.rb_null);
+        mRadioGroup.check(R.id.rb_null);
         mRadioGroup.check(R.id.rb_day);
 
         mIvLast = (ImageView) findViewById(R.id.id_iv_last);
@@ -262,6 +262,7 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
                         if (responseBean.getCode() == 0) {
 //                        if (true) {
 //                            Toast.makeText(HistoryActivity.this, responseBean.toString(), Toast.LENGTH_SHORT).show();
+
                             // 解析服务器返回的历史数据，并存到 mHistoryDataItemList
                             GlobalData.historyDataItemBeanList.clear();
                             mHistoryDataItemList.clear();
@@ -428,9 +429,6 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
 
 
                 Log.i(" size", mHistoryDataItemList.size() + "");
-//                SimpleAdapter adapter = new SimpleAdapter(HistoryActivity.this, getData(), R.layout.list_item1,
-//                        new String[]{"image", "day", "time", "value", "suggestion"},
-//                        new int[]{R.id.item_iv_image, R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
                 MyAdapter adapter=new MyAdapter(HistoryActivity.this,getData());
 
                 mListView.setAdapter(adapter);
@@ -476,9 +474,6 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
         // 更新TextView
         mTvDataType.setText(mDataTypeTexts[mIndex]);
         // 更新ListView
-//        SimpleAdapter adapter = new SimpleAdapter(HistoryActivity.this, getData(), R.layout.list_item1,
-//                new String[]{"image", "day", "time", "value", "suggestion"},
-//                new int[]{R.id.item_iv_image, R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
         MyAdapter adapter=new MyAdapter(HistoryActivity.this,getData());
         mListView.setAdapter(adapter);
 
@@ -489,8 +484,8 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
         FragmentTransaction transaction = mManager.beginTransaction();
         switch (mTimeType) {
             case DAY:
-                DayHistoryFragment fragment = new DayHistoryFragment();
-                transaction.replace(R.id.fl_history, fragment);
+                mDayHistoryFragment  = new DayHistoryFragment();
+                transaction.replace(R.id.fl_history, mDayHistoryFragment);
                 break;
             case WEEK:
                 mWeekHistoryFragment = new WeekHistoryFragment();

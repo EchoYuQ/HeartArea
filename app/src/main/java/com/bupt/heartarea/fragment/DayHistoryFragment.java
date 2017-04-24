@@ -158,7 +158,7 @@ public class DayHistoryFragment extends Fragment {
 //            List<SubcolumnValue> values2;
 
             for (HistoryDataItemBean item : mHistoryDataItemList) {
-                System.out.println(item.toString());
+                System.out.println(item.toString() + "-----");
             }
 
             for (int j = 0; j < mHistoryDataItemList.size(); ++j) {
@@ -181,8 +181,6 @@ public class DayHistoryFragment extends Fragment {
 
 
             }
-
-
 
 
             Line line = new Line(values1);
@@ -367,7 +365,22 @@ public class DayHistoryFragment extends Fragment {
 
         @Override
         public void onPointValueSelected(int lineIndex, int pointIndex, PointValue value) {
-            Toast.makeText(getActivity(), "时间：" + mHistoryDataItemList.get(pointIndex).getTime() + "心率为：" + mHistoryDataItemList.get(pointIndex).getHeart_rate() + "Selected line point: " + value, Toast.LENGTH_SHORT).show();
+            switch (GlobalData.currenttype) {
+                case HEART_RATE:
+                    Toast.makeText(getActivity(), "时间：" + mHistoryDataItemList.get(pointIndex).getTime() +
+                            "心率为：" + mHistoryDataItemList.get(pointIndex).getHeart_rate(), Toast.LENGTH_SHORT).show();
+                    break;
+                case PRESSURE:
+                    Toast.makeText(getActivity(), "时间：" + mHistoryDataItemList.get(pointIndex).getTime() +
+                            "疲劳度为：" + mHistoryDataItemList.get(pointIndex).getPressure() , Toast.LENGTH_SHORT).show();
+                    break;
+                case BLOOD_OXYGEN:
+                    Toast.makeText(getActivity(), "时间：" + mHistoryDataItemList.get(pointIndex).getTime() +
+                            "血氧为：" + mHistoryDataItemList.get(pointIndex).getBlood_oxygen() , Toast.LENGTH_SHORT).show();
+                    break;
+
+
+            }
         }
 
     }

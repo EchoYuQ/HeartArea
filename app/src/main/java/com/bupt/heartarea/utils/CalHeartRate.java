@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by yuqing on 2017/2/16.
  */
-public class CalculateHeartRate {
+public class CalHeartRate {
 
     /**
      * 简单寻峰算法

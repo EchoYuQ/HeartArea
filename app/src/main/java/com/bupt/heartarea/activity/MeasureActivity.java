@@ -33,11 +33,12 @@ import com.bupt.heartarea.sg.SGFilter;
 import com.bupt.heartarea.ui.MySurfaceView;
 import com.bupt.heartarea.ui.ProgressWheel;
 import com.bupt.heartarea.ui.TwinkleDrawable;
+import com.bupt.heartarea.utils.CalBloodOxygen;
+import com.bupt.heartarea.utils.CalHeartRate;
 import com.bupt.heartarea.utils.GlobalData;
 import com.bupt.heartarea.utils.ImageProcessing;
 import com.bupt.heartarea.utils.TimeUtil;
 import com.google.gson.Gson;
-import com.bupt.heartarea.utils.CalculateHeartRate;
 
 import android.app.Activity;
 import android.content.Context;
@@ -150,6 +151,8 @@ public class MeasureActivity extends Activity {
     private int mRealTimeHeartRate = 0;
     // 最后的静态处理心率
     private int mHeartRate;
+    // 血氧
+    private int mBloodOxygen=0;
 
     private boolean mIsHeartRateCanSet = true;
 
@@ -222,10 +225,10 @@ public class MeasureActivity extends Activity {
         System.out.println("实时心率去噪数据");
         System.out.println(realtime_data_smoothed_list);
         // peaksList为峰的横坐标列表
-        List<Integer> peaksList = CalculateHeartRate.findPeaksRealTime(realtime_data_smoothed_list);
+        List<Integer> peaksList = CalHeartRate.findPeaksRealTime(realtime_data_smoothed_list);
         System.out.println("实时心率RR间隔");
-        System.out.println(CalculateHeartRate.calRRIntevalOrigin(peaksList));
-        mRealTimeHeartRate = CalculateHeartRate.calHeartRate(peaksList, INTERVAL);
+        System.out.println(CalHeartRate.calRRIntevalOrigin(peaksList));
+        mRealTimeHeartRate = CalHeartRate.calHeartRate(peaksList, INTERVAL);
         Log.i("real time heartRate", mRealTimeHeartRate + "");
     }
 
@@ -526,14 +529,17 @@ public class MeasureActivity extends Activity {
                     System.out.println(data_origin_list2);
                     //                    System.out.println(data_smoothed_list);
                     // peaksList为峰的横坐标列表
-                    List<Integer> peaksList = CalculateHeartRate.findPeaks(data_smoothed_list);
-                    mHeartRate = CalculateHeartRate.calHeartRate(peaksList, INTERVAL);
+                    List<Integer> peaksList = CalHeartRate.findPeaks(data_smoothed_list);
+                    mHeartRate = CalHeartRate.calHeartRate(peaksList, INTERVAL);
                     userDataBean.setHeartrate(mHeartRate);
                     Log.i("heart rate", mHeartRate + "");
                     m_TvLabel.setText(mHeartRate + "");
-                    Toast.makeText(MeasureActivity.this, "心率为" + mHeartRate, Toast.LENGTH_LONG).show();
+//                    Toast.makeText(MeasureActivity.this, "心率为" + mHeartRate, Toast.LENGTH_LONG).show();
 
-                    userDataBean.setRr_datas(CalculateHeartRate.calRRIntevalOrigin(peaksList));
+                    mBloodOxygen= (int)CalBloodOxygen.SpO2(userDataBean.getRed_datas(),userDataBean.getBlue_datas());
+                    Toast.makeText(MeasureActivity.this, "血氧为" + mBloodOxygen, Toast.LENGTH_LONG).show();
+
+                    userDataBean.setRr_datas(CalHeartRate.calRRIntevalOrigin(peaksList));
                     System.out.println(userDataBean.getRr_datas());
                     userDataBean.setNew_datas(data_smoothed_list);
                     System.out.println(userDataBean.getNew_datas());
@@ -542,7 +548,8 @@ public class MeasureActivity extends Activity {
                     //                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
                     // 上传给server端的数据
                     mMeasureData.setHeart_rate(mHeartRate);
-                    mMeasureData.setRr_interval(CalculateHeartRate.calRRInteval(peaksList, INTERVAL));
+                    mMeasureData.setBlood_oxygen(mBloodOxygen);
+                    mMeasureData.setRr_interval(CalHeartRate.calRRInteval(peaksList, INTERVAL));
                     // List<Double>转成List<Float> 并保留4位小数
                     DecimalFormat df = new DecimalFormat("#0.0000");
                     List<Float> float_list = new ArrayList<>();
@@ -563,8 +570,8 @@ public class MeasureActivity extends Activity {
 //                    bundle.putSerializable("measure_data", mMeasureData);
 //                    intent.putExtras(bundle);
 //                    startActivity(intent);
+//                    finish();
 
-                    finish();
 
                 } else {
                     //将旧的点集中x和y的数值取出来放入backup中，并且将x的值减1，造成曲线向左平移的效果
@@ -822,8 +829,10 @@ public class MeasureActivity extends Activity {
                             bundle.putString("ad", ad);
                             bundle.putString("alert", alert);
                             bundle.putInt("heart_rate", mHeartRate);
+                            bundle.putInt("blood_oxygen",mBloodOxygen);
                             intent.putExtras(bundle);
                             startActivity(intent);
+                            finish();
                         }
 
                     }

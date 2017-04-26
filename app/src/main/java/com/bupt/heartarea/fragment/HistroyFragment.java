@@ -19,7 +19,7 @@ import cn.aigestudio.datepicker.views.DatePicker;
 
 /**
  * Demo应用的主Activity
- * The main activity of demo
+ * The CalBloodOxygen activity of demo
  *
  * @author AigeStudio 2015-03-26
  */

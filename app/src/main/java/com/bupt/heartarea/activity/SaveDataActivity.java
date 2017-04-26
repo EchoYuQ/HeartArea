@@ -140,10 +140,10 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
                 Log.i("data_smoothed.length",data_smoothed.length+"");
                 System.out.println(data_smoothed_list);
                 // peaksList为峰的横坐标列表
-                List<Integer> peaksList=CalculateHeartRate.findPeaks(data_smoothed_list);
-                int heartRate=CalculateHeartRate.calHeartRate(peaksList,100);
+                List<Integer> peaksList=CalHeartRate.findPeaks(data_smoothed_list);
+                int heartRate=CalHeartRate.calHeartRate(peaksList,100);
                 Log.i("heart rate",heartRate+"");
-                userDataBean.setRr_datas(CalculateHeartRate.calRRIntevalOrigin(peaksList));
+                userDataBean.setRr_datas(CalHeartRate.calRRIntevalOrigin(peaksList));
                 System.out.println(userDataBean.getRr_datas());
                 userDataBean.setNew_datas(data_smoothed_list);
                 */

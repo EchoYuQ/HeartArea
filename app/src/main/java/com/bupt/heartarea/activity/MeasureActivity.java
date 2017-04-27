@@ -152,9 +152,11 @@ public class MeasureActivity extends Activity {
     // 最后的静态处理心率
     private int mHeartRate;
     // 血氧
-    private int mBloodOxygen=0;
+    private int mBloodOxygen = 0;
 
     private boolean mIsHeartRateCanSet = true;
+
+    private boolean mIsSuccess=true;
 
     /**
      * 类型枚举
@@ -198,12 +200,12 @@ public class MeasureActivity extends Activity {
 
         m_ProgressWheel = (ProgressWheel) findViewById(com.bupt.heartarea.R.id.pw_heartrate);
         // 用户使用
-                m_ProgressWheel.setMax(2 * AXISXMAX - 10);
+        m_ProgressWheel.setMax(2 * AXISXMAX - 10);
         // 收集数据使用
 //        m_ProgressWheel.setMax(4 * AXISXMAX - 10);
     }
 
-    private void calRealTimeHeartRate() {
+    private boolean calRealTimeHeartRate() {
         int size = mRealTimeDatas.size();
         double[] realtime_data_origin = new double[size];
         for (int i = 0; i < size; i++) {
@@ -226,10 +228,21 @@ public class MeasureActivity extends Activity {
         System.out.println(realtime_data_smoothed_list);
         // peaksList为峰的横坐标列表
         List<Integer> peaksList = CalHeartRate.findPeaksRealTime(realtime_data_smoothed_list);
+
+        List<Integer> rr = CalHeartRate.calRRInteval(peaksList,INTERVAL);
         System.out.println("实时心率RR间隔");
-        System.out.println(CalHeartRate.calRRIntevalOrigin(peaksList));
+        System.out.println(rr);
+        if(rr!=null&&rr.size()>0)
+        {
+            int n = rr.size();
+            int time0=rr.get(0);
+            int time = rr.get(n - 1);
+            if (time0 < 500 || time0 > 1100) return false;
+            if (time < 500 || time > 1100) return false;
+        }
         mRealTimeHeartRate = CalHeartRate.calHeartRate(peaksList, INTERVAL);
         Log.i("real time heartRate", mRealTimeHeartRate + "");
+        return true;
     }
 
     @Override
@@ -429,11 +442,13 @@ public class MeasureActivity extends Activity {
         // 数据有效则添加，无效则清空数据集
         // 另外R通道平均值在5.4以上
         if (brightvalue < AXISYMAX && brightvalue > AXISYMIN && redvalue > 5.0) {
+
             count++;
             addX = AXISXMAX;
             addY = brightvalue;
             // 把数据添加到mDatas中，用来保存到文件中
             if (count >= 10) {
+
                 // 测试数值显示和心跳动画用
                 //
                 if (!mIsHeartAnimPlaying) {
@@ -445,24 +460,47 @@ public class MeasureActivity extends Activity {
                 // 测试实时心率计算
                 mRealTimeDatas.add(brightvalue);
                 int n = mRealTimeDatas.size();
-                if (n > 50 && n % 10 == 0) {
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            calRealTimeHeartRate();
-                        }
-                    });
-                    thread.start();
-                }
+
                 if (count == 10) {
+                    mIsSuccess=true;
                     mIsHeartRateCanSet = true;
                     mRealTimeHeartRate = mHeartRate;
                 }
                 if (mIsHeartRateCanSet) {
                     m_TvLabel.setText(mRealTimeHeartRate + "");
-                    Log.i("m_TvLabel", "设了一次实时心率值");
+                    Log.i("m_TvLabel", "设了一次实时心率值："+mRealTimeHeartRate);
 
                 }
+
+                if (n > 50 && n % 10 == 0) {
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mIsSuccess=calRealTimeHeartRate();
+                        }
+                    });
+                    thread.start();
+                }
+
+
+                Log.i("mIsSuccess",mIsSuccess+"");
+                if (!mIsSuccess)
+                {
+                    if (mIsHeartAnimPlaying) {
+                        m_HeartDrawable.stopTwinkle();
+                        mIsHeartAnimPlaying = false;
+                    }
+                    count = 0;
+                    mDatas.clear();
+                    mRealTimeDatas.clear();
+                    mGreenDatas.clear();
+                    mRedDatas.clear();
+                    mBlueDatas.clear();
+                    m_ProgressWheel.setProgress(0);
+                    series.clear();
+                    return;
+                }
+
 
                 mDatas.add(brightvalue);
                 mRedDatas.add(redvalue);
@@ -536,7 +574,7 @@ public class MeasureActivity extends Activity {
                     m_TvLabel.setText(mHeartRate + "");
 //                    Toast.makeText(MeasureActivity.this, "心率为" + mHeartRate, Toast.LENGTH_LONG).show();
 
-                    mBloodOxygen= (int)CalBloodOxygen.SpO2(userDataBean.getRed_datas(),userDataBean.getBlue_datas());
+                    mBloodOxygen = (int) CalBloodOxygen.SpO2(userDataBean.getRed_datas(), userDataBean.getBlue_datas());
                     Toast.makeText(MeasureActivity.this, "血氧为" + mBloodOxygen, Toast.LENGTH_LONG).show();
 
                     userDataBean.setRr_datas(CalHeartRate.calRRIntevalOrigin(peaksList));
@@ -829,7 +867,7 @@ public class MeasureActivity extends Activity {
                             bundle.putString("ad", ad);
                             bundle.putString("alert", alert);
                             bundle.putInt("heart_rate", mHeartRate);
-                            bundle.putInt("blood_oxygen",mBloodOxygen);
+                            bundle.putInt("blood_oxygen", mBloodOxygen);
                             intent.putExtras(bundle);
                             startActivity(intent);
                             finish();

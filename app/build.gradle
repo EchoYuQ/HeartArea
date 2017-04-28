@@ -27,6 +27,8 @@ dependencies {
     compile project(':DatePicker')
     compile project(':hellocharts-library')
     compile 'com.github.bumptech.glide:glide:3.7.0'
+
+//    compile 'com.github.1em0nsOft:LemonHello4Android:1.0.1'
     //网络请求
     //    compile 'com.squareup.retrofit2:retrofit:2.1.0'
     //    compile 'com.squareup.retrofit2:converter-gson:2.1.0'

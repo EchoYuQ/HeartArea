@@ -84,6 +84,7 @@
     <color name="title_white">#FFF8F8F9</color>
     <color name="bg_white">#FAFAFA</color>
     <color name="text_black">#333333</color>
+    <color name="text_red">#da3e3e</color>
     <color name="text_black_1">#666666</color>
     <color name="text_black_2">#576272</color>
     <color name="text_white">#FCFDFD</color>

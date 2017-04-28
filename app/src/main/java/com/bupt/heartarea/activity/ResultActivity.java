@@ -1,7 +1,17 @@
 package com.bupt.heartarea.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.bupt.heartarea.ui.CircleIndicator;
 import com.bupt.heartarea.ui.LineIndicator;
@@ -11,17 +21,22 @@ import com.bupt.heartarea.ui.IndicatorItem;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultActivity extends Activity {
+public class ResultActivity extends Activity implements View.OnClickListener{
 
     CircleIndicator ci1;
-    LineIndicator liProgress;
+    LineIndicator mLiHeartRateProgress;
+    LineIndicator mLiBloodOxygenProgress;
 
     private int mHeartRate = 0;
     private int mFatigue = 0;
+    private int mBloodOxygen=0;
     int mMiddleColor;
     int mLowColor;
     int mHighColor;
+    int mFeedBackValue = 1;
     String mAlert;
+    Button mBtnFeedBackYes;
+    Button mBtnFeedBackNo;
 
 
     @Override
@@ -30,21 +45,34 @@ public class ResultActivity extends Activity {
         setContentView(R.layout.activity_cicle_view);
 
 
-        Bundle bundle=getIntent().getExtras();
-        mHeartRate =  bundle.getInt("heart_rate");
-        mFatigue =  bundle.getInt("pressure");
+        Bundle bundle = getIntent().getExtras();
+        mHeartRate = bundle.getInt("heart_rate");
+        mFatigue = bundle.getInt("pressure");
+        mBloodOxygen = bundle.getInt("blood_oxygen");
 
-        mAlert=bundle.getString("alert");
+        mAlert = bundle.getString("alert");
 
         initColor();
         initView();
-        testLineProgress();
+        setHeartRateProgress(mHeartRate);
         testIndicator();
+        setBloodOxygenProgress(mBloodOxygen);
+        Log.e("mBloodOxygen",mBloodOxygen+"");
     }
 
     private void initView() {
-        liProgress = (LineIndicator) findViewById(R.id.li_progress);
+        mLiHeartRateProgress = (LineIndicator) findViewById(R.id.li_progress_heart_rate);
+        mLiBloodOxygenProgress = (LineIndicator) findViewById(R.id.li_progress_blood_oxygen);
         ci1 = (CircleIndicator) findViewById(R.id.ci_1);
+
+        mBtnFeedBackYes= (Button) findViewById(R.id.btn_result_yes);
+        mBtnFeedBackYes.setOnClickListener(this);
+
+        mBtnFeedBackNo= (Button) findViewById(R.id.btn_result_no);
+        mBtnFeedBackNo.setOnClickListener(this);
+
+
+
     }
 
     private void initColor() {
@@ -54,29 +82,59 @@ public class ResultActivity extends Activity {
     }
 
 
-    private void testLineProgress() {
+    private void setHeartRateProgress(int value) {
         String leftAlert = "慢";
         String leftContent = "0";
         String rightAlert = "快";
         String rightContent = "150";
-        if (mHeartRate > 100) {
-            liProgress.setProgressColor(mHighColor);
-            liProgress.setIndicatorBackground(mHighColor);
+        if (value > 100) {
+            mLiHeartRateProgress.setProgressColor(mHighColor);
+            mLiHeartRateProgress.setIndicatorBackground(mHighColor);
         } else {
-            if (mHeartRate > 65) {
-                liProgress.setProgressColor(mMiddleColor);
-                liProgress.setIndicatorBackground(mMiddleColor);
+            if (value > 65) {
+                mLiHeartRateProgress.setProgressColor(mMiddleColor);
+                mLiHeartRateProgress.setIndicatorBackground(mMiddleColor);
 
             } else {
-                liProgress.setProgressColor(mLowColor);
-                liProgress.setIndicatorBackground(mLowColor);
+                mLiHeartRateProgress.setProgressColor(mLowColor);
+                mLiHeartRateProgress.setIndicatorBackground(mLowColor);
 
             }
         }
-        liProgress.setContent(leftAlert, leftContent, rightAlert, rightContent);
-        liProgress.setIndicator(40, 150, mHeartRate, mHeartRate + " BMP");
+        mLiHeartRateProgress.setContent(leftAlert, leftContent, rightAlert, rightContent);
+        mLiHeartRateProgress.setIndicator(40, 150, value, value + " BMP");
     }
 
+    /**
+     * 绘制 血氧值 进度条
+     * @param value
+     */
+    private void setBloodOxygenProgress(int value) {
+        String leftAlert = "低";
+        String leftContent = "90";
+        String rightAlert = "高";
+        String rightContent = "100";
+        if (value > 97) {
+            mLiBloodOxygenProgress.setProgressColor(mHighColor);
+            mLiBloodOxygenProgress.setIndicatorBackground(mHighColor);
+        } else {
+            if (value > 94) {
+                mLiBloodOxygenProgress.setProgressColor(mMiddleColor);
+                mLiBloodOxygenProgress.setIndicatorBackground(mMiddleColor);
+
+            } else {
+                mLiBloodOxygenProgress.setProgressColor(mLowColor);
+                mLiBloodOxygenProgress.setIndicatorBackground(mLowColor);
+
+            }
+        }
+        mLiBloodOxygenProgress.setContent(leftAlert, leftContent, rightAlert, rightContent);
+        mLiBloodOxygenProgress.setIndicator(90, 100, value, value + " %");
+    }
+
+    /**
+     * 疲劳度仪表盘
+     */
     private void testIndicator() {
 
         List<IndicatorItem> dividerIndicator = new ArrayList<>();
@@ -122,5 +180,76 @@ public class ResultActivity extends Activity {
         }
         ci1.setContent(title, content, unit, mAlert);
         ci1.setIndicatorValue(dividerIndicator, mFatigue);
+    }
+
+    /**
+     * 显示带有radiobutton的对话框
+     */
+    private void showRadioButtonDialog() {
+        View radiobuttonview;       //使用view来接入方法写出的dialog，方便相关初始化
+        LayoutInflater inflater;        //引用自定义dialog布局
+        inflater = LayoutInflater.from(ResultActivity.this);
+        radiobuttonview = (LinearLayout) inflater.inflate(R.layout.radiogroup_feedback, null);                                           //那个layout就是我们可以dialog自定义的布局啦
+        final RadioGroup radiogroup = (RadioGroup) radiobuttonview.findViewById(R.id.rg_feedback);
+        final RadioButton radioButton1 = (RadioButton) radiobuttonview.findViewById(R.id.rb_pressure_1);
+        final RadioButton radioButton2 = (RadioButton) radiobuttonview.findViewById(R.id.rb_pressure_2);
+        final RadioButton radioButton3 = (RadioButton) radiobuttonview.findViewById(R.id.rb_pressure_3);
+        final RadioButton radioButton4 = (RadioButton) radiobuttonview.findViewById(R.id.rb_pressure_4);
+        final RadioButton radioButton5 = (RadioButton) radiobuttonview.findViewById(R.id.rb_pressure_5);
+        radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.rb_pressure_1:
+                        mFeedBackValue = 1;
+                        break;
+                    case R.id.rb_pressure_2:
+                        mFeedBackValue = 2;
+                        break;
+                    case R.id.rb_pressure_3:
+                        mFeedBackValue = 3;
+                        break;
+                    case R.id.rb_pressure_4:
+                        mFeedBackValue = 4;
+                        break;
+                    case R.id.rb_pressure_5:
+                        mFeedBackValue = 5;
+                        break;
+                }
+
+            }
+        });
+
+        radiogroup.check(R.id.rb_pressure_3);
+
+        new AlertDialog.Builder(ResultActivity.this)
+                .setView(radiobuttonview)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(ResultActivity.this, mFeedBackValue+"", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId())
+        {
+            case R.id.btn_result_yes:
+
+                break;
+            case R.id.btn_result_no:
+                showRadioButtonDialog();
+                break;
+        }
     }
 }

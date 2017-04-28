@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_result_feedback"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="20dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="请选择您当前疲劳度状态"
+        android:textColor="@color/text_green"
+        android:textSize="18sp" />
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:id="@+id/rg_feedback">
+
+        <RadioButton
+            android:id="@+id/rb_pressure_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="活力十足"
+            android:textColor="#94df65" />
+
+        <RadioButton
+            android:id="@+id/rb_pressure_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="充满活力"
+            android:textColor="#5b9e31" />
+
+        <RadioButton
+            android:id="@+id/rb_pressure_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="活力尚可"
+            android:textColor="#2b4d16" />
+
+        <RadioButton
+            android:id="@+id/rb_pressure_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="有点疲惫"
+            android:textColor="#d48056" />
+
+        <RadioButton
+            android:id="@+id/rb_pressure_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="特别疲劳"
+            android:textColor="#7c2212" />
+    </RadioGroup>
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="horizontal"-->
+
+        <!--&gt;-->
+
+        <!--<Button-->
+            <!--android:id="@+id/btn_result_commit"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_marginRight="5dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/btn_login"-->
+            <!--android:text="提交" />-->
+
+        <!--<Button-->
+            <!--android:id="@+id/btn_result_cancel"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="40dp"-->
+            <!--android:layout_marginBottom=""-->
+            <!--android:layout_marginLeft="5dp"-->
+            <!--android:layout_weight="1"-->
+            <!--android:background="@drawable/btn_login"-->
+            <!--android:text="取消" />-->
+    <!--</LinearLayout>-->
+</LinearLayout>

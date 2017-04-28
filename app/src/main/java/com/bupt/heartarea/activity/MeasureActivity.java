@@ -66,7 +66,7 @@ import android.widget.Toast;
 /**
  * 程序的主入口
  *
- * @author liuyazhuang
+ * @author yuqing
  */
 public class MeasureActivity extends Activity {
     private static final String URL_MEASURE = GlobalData.URL_HEAD + ":8080/detect3/TransServlet";

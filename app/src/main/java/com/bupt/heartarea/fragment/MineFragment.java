@@ -9,7 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,12 @@ import com.bupt.heartarea.activity.LoginActivity;
 import com.bupt.heartarea.activity.MainActivity;
 import com.bupt.heartarea.activity.MyInformationActivity;
 import com.bupt.heartarea.utils.FileUtil;
+
+import net.lemonsoft.lemonhello.LemonHello;
+import net.lemonsoft.lemonhello.LemonHelloAction;
+import net.lemonsoft.lemonhello.LemonHelloInfo;
+import net.lemonsoft.lemonhello.LemonHelloView;
+import net.lemonsoft.lemonhello.interfaces.LemonHelloActionDelegate;
 
 
 /**
@@ -86,14 +94,14 @@ public class MineFragment extends Fragment {
 
         mIvUimage = (RoundImageView) view.findViewById(R.id.iv_uimage);// 头像
 
-        mTvGreeting= (TextView) view.findViewById(R.id.id_greeting);
-        String time= TimeUtil.getCurrentTime();
-        String times[]=time.split(":");
-        int hour=Integer.parseInt(times[0]);
-        if (hour>=18||hour<5) mTvGreeting.setText("Good Night!");
-        else if(hour>=5&&hour<12) mTvGreeting.setText("Good Morning!");
-        else if(hour>=12&&hour<14) mTvGreeting.setText("Good Noon!");
-        else if(hour>=14&&hour<18) mTvGreeting.setText("Good Afternoon!");
+        mTvGreeting = (TextView) view.findViewById(R.id.id_greeting);
+        String time = TimeUtil.getCurrentTime();
+        String times[] = time.split(":");
+        int hour = Integer.parseInt(times[0]);
+        if (hour >= 18 || hour < 5) mTvGreeting.setText("Good Night!");
+        else if (hour >= 5 && hour < 12) mTvGreeting.setText("Good Morning!");
+        else if (hour >= 12 && hour < 14) mTvGreeting.setText("Good Noon!");
+        else if (hour >= 14 && hour < 18) mTvGreeting.setText("Good Afternoon!");
 
         mTvName = (TextView) view.findViewById(R.id.tv_name);
         mTvName.setText(GlobalData.username);
@@ -139,13 +147,30 @@ public class MineFragment extends Fragment {
                     alphaIndicator.setPagerNum(2);
                     break;
                 case R.id.rl_quit:
-                    // 跳转至登录界面
+
+                    LemonHello.getInformationHello("您确定要注销吗？", "注销登录后您本地的账号信息将被清空")
+                            .addAction(new LemonHelloAction("取消", new LemonHelloActionDelegate() {
+                                @Override
+                                public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                    helloView.hide();
+                                }
+                            }))
+                            .addAction(new LemonHelloAction("我要注销", Color.RED, new LemonHelloActionDelegate() {
+                                @Override
+                                public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                    helloView.hide();
+
+                                    // 跳转至登录界面
 //                    if (mIsLogin == true) {
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    startActivity(intent);
+                                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                                    startActivity(intent);
 //                    GlobalData.clearUserInfo();
-                    getActivity().finish();
-                    clearSP();
+                                    getActivity().finish();
+                                    clearSP();
+                                }
+                            }))
+                            .show(getActivity());
+
 
                     break;
                 default:

@@ -200,9 +200,9 @@ public class MeasureActivity extends Activity {
 
         m_ProgressWheel = (ProgressWheel) findViewById(com.bupt.heartarea.R.id.pw_heartrate);
         // 用户使用
-        m_ProgressWheel.setMax(2 * AXISXMAX - 10);
+//        m_ProgressWheel.setMax(2 * AXISXMAX - 10);
         // 收集数据使用
-//        m_ProgressWheel.setMax(4 * AXISXMAX - 10);
+        m_ProgressWheel.setMax(4 * AXISXMAX - 10);
     }
 
     private boolean calRealTimeHeartRate() {
@@ -509,9 +509,9 @@ public class MeasureActivity extends Activity {
 
                 // 如果有效数据采集到300个，就跳转到保存数据的界面
                 // 收集数据用
-//                if (count == 4 * AXISXMAX) {
+                if (count == 4 * AXISXMAX) {
 //                     用户使用
-                if (count == 2 * AXISXMAX) {
+//                if (count == 2 * AXISXMAX) {
 
                     UserDataBean userDataBean = new UserDataBean();
                     userDataBean.setDatas(mDatas);
@@ -575,7 +575,7 @@ public class MeasureActivity extends Activity {
 //                    Toast.makeText(MeasureActivity.this, "心率为" + mHeartRate, Toast.LENGTH_LONG).show();
 
                     mBloodOxygen = (int) CalBloodOxygen.SpO2(userDataBean.getRed_datas(), userDataBean.getBlue_datas());
-                    Toast.makeText(MeasureActivity.this, "血氧为" + mBloodOxygen, Toast.LENGTH_LONG).show();
+//                    Toast.makeText(MeasureActivity.this, "血氧为" + mBloodOxygen, Toast.LENGTH_LONG).show();
 
                     userDataBean.setRr_datas(CalHeartRate.calRRIntevalOrigin(peaksList));
                     System.out.println(userDataBean.getRr_datas());
@@ -598,17 +598,19 @@ public class MeasureActivity extends Activity {
                     }
                     mMeasureData.setData(float_list);
 
+                    //---------------------------------------------------------
                     // 1. 用于用户使用
-                    postToServer(MeasureActivity.this);
+//                    postToServer(MeasureActivity.this);
 
 
                     // 2. 用于收集数据使用
-//                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("measure_data", mMeasureData);
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
-//                    finish();
+                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("measure_data", mMeasureData);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    finish();
+                    //-----------------------------------------------------------
 
 
                 } else {
@@ -830,7 +832,7 @@ public class MeasureActivity extends Activity {
                     @Override
                     public void onResponse(String response) {
                         Log.d("请求成功", "response -> " + response);
-                        Toast.makeText(context, response, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(context, response, Toast.LENGTH_LONG).show();
 
                         Gson gson = new Gson();
 

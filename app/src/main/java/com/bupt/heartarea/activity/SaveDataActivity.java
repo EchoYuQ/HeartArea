@@ -3,6 +3,7 @@ package com.bupt.heartarea.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +26,14 @@ import com.bupt.heartarea.utils.GlobalData;
 import com.bupt.heartarea.utils.TimeUtil;
 import com.google.gson.Gson;
 import com.bupt.heartarea.R;
+
+import net.lemonsoft.lemonbubble.LemonBubble;
+import net.lemonsoft.lemonhello.LemonHello;
+import net.lemonsoft.lemonhello.LemonHelloAction;
+import net.lemonsoft.lemonhello.LemonHelloInfo;
+import net.lemonsoft.lemonhello.LemonHelloView;
+import net.lemonsoft.lemonhello.adapter.LemonHelloEventDelegateAdapter;
+import net.lemonsoft.lemonhello.interfaces.LemonHelloActionDelegate;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -216,19 +225,6 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
                         }
                     }
                 });
-//                if (et_mFatigue.getText().toString().equals("")) {
-//                    Toast.makeText(SaveDataActivity.this, "请输入您的疲劳值", Toast.LENGTH_SHORT).show();
-//                    break;
-//
-//                } else {
-//                    mPressure = Integer.parseInt(et_mFatigue.getText().toString());
-//                    if (mPressure >= 0 && mPressure <= 100) {
-//                        mUserDataBean.setFatigue(fatigue);
-//                    } else {
-//                        Toast.makeText(SaveDataActivity.this, "请输入您的正确的疲劳值，范围0-100", Toast.LENGTH_SHORT).show();
-//                        break;
-//                    }
-//                }
 
 
 //                Gson gson = new Gson();
@@ -260,14 +256,44 @@ public class SaveDataActivity extends Activity implements View.OnClickListener {
             @Override
             public void onResponse(String s) {
                 Log.i("Response", s);
+                System.out.println(s);
                 Gson gson = new Gson();
                 ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
-                saveUserInformationToSP();
                 if (responseBean!=null&&responseBean.getCode() == 0) {
+                    saveUserInformationToSP();
 
-                    System.out.println("上传成功");
-                    Toast.makeText(SaveDataActivity.this, "上传成功", Toast.LENGTH_LONG).show();
-                    finish();
+//                    System.out.println("上传成功");
+//                    Toast.makeText(SaveDataActivity.this, "上传成功", Toast.LENGTH_LONG).show();
+//                    LemonBubble.getRightBubbleInfo()// 增加无限点语法修改bubbleInfo的特性
+//                            .setTitle("上传成功")
+//                            .setTitleFontSize(12)// 修改字体大小
+//                            .setTitleColor(Color.parseColor("#a269af73"))
+//                            .setMaskColor(Color.argb(100, 0, 0, 0))// 修改蒙版颜色
+//                            .show(SaveDataActivity.this, 2000);
+
+                    LemonHello.getSuccessHello("上传成功", "感谢您对我们工作的支持，谢谢您的使用")
+                            .setContentFontSize(14)
+                            .addAction(new LemonHelloAction("我知道啦", new LemonHelloActionDelegate() {
+                                @Override
+                                public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                    helloView.hide();
+                                    finish();
+
+                                }
+                            }))
+                            .setEventDelegate(new LemonHelloEventDelegateAdapter() {
+                                @Override
+                                public void onMaskTouch(LemonHelloView helloView, LemonHelloInfo helloInfo) {
+                                    super.onMaskTouch(helloView, helloInfo);
+                                    helloView.hide();
+                                    finish();
+                                }
+                            })
+                            .show(SaveDataActivity.this);
+
+
+
+
 
                 } else if(responseBean!=null){
                     Toast.makeText(SaveDataActivity.this, responseBean.getMsg(), Toast.LENGTH_LONG).show();

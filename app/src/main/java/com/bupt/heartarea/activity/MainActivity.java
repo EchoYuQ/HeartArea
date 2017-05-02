@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -27,6 +29,12 @@ import com.bupt.heartarea.fragment.NewsFragment;
 import com.bupt.heartarea.ui.AlphaIndicator;
 import com.bupt.heartarea.ui.AlphaView;
 import com.bupt.heartarea.fragment.HistroyFragment;
+
+import net.lemonsoft.lemonhello.LemonHello;
+import net.lemonsoft.lemonhello.LemonHelloAction;
+import net.lemonsoft.lemonhello.LemonHelloInfo;
+import net.lemonsoft.lemonhello.LemonHelloView;
+import net.lemonsoft.lemonhello.interfaces.LemonHelloActionDelegate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +72,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         initEvent();
     }
-
-
 
 
     private void initEvent() {
@@ -142,7 +148,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("MainActivity","onDestroy");
+        Log.i("MainActivity", "onDestroy");
     }
 
     /**
@@ -160,32 +166,53 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         if (cameraPermissionCode != PackageManager.PERMISSION_GRANTED) {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
                     Manifest.permission.CAMERA)) {
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("缺少相机权限")
-                        .setMessage("当前应用缺少相机权限,请去设置界面授权.")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+                LemonHello.getInformationHello("缺少相机权限", "当前应用缺少相机权限,请去设置界面授权")
+                        .addAction(new LemonHelloAction("取消", new LemonHelloActionDelegate() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                helloView.hide();
                                 Toast.makeText(MainActivity.this, "您拒绝了权限，"
                                         + "可能会导致该应用内部发生错误,请尽快授权", Toast.LENGTH_LONG)
                                         .show();
-
                             }
-                        })
-                        .setPositiveButton("设置", new DialogInterface.OnClickListener() {
+                        }))
+                        .addAction(new LemonHelloAction("设置", Color.RED, new LemonHelloActionDelegate() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                            public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+                                helloView.hide();
                                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                 // 根据包名打开对应的设置界面
                                 intent.setData(Uri.parse("package:" + getPackageName()));
                                 startActivity(intent);
                             }
-                        })
-                        .show();
+                        }))
+                        .show(MainActivity.this);
+
+//                new AlertDialog.Builder(MainActivity.this)
+//                        .setTitle("")
+//                        .setMessage("当前应用缺少相机权限,请去设置界面授权.")
+//                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//
+//
+//                            }
+//                        })
+//                        .setPositiveButton("设置", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                                // 根据包名打开对应的设置界面
+//                                intent.setData(Uri.parse("package:" + getPackageName()));
+//                                startActivity(intent);
+//                            }
+//                        })
+//                        .show();
 
             }
             ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[] {Manifest.permission.CAMERA},
+                    new String[]{Manifest.permission.CAMERA},
                     123);
             return false;
         }

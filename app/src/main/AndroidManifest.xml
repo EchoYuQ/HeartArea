@@ -22,45 +22,54 @@
         android:allowBackup="true"
 
         android:icon="@drawable/icon_main"
-        android:label="@string/app_name"
+        android:label="@string/app_name_alpha"
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name="com.bupt.heartarea.activity.MainActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
 
 
         </activity>
 
 
-        <activity android:name="com.bupt.heartarea.activity.MeasureActivity">
+        <activity android:name="com.bupt.heartarea.activity.MeasureActivity"
+            android:screenOrientation="portrait">
 
         </activity>
 
-        <activity android:name="com.bupt.heartarea.activity.SaveDataActivity">
+        <activity android:name="com.bupt.heartarea.activity.SaveDataActivity"
+            android:screenOrientation="portrait">
 
         </activity>
 
-        <activity android:name="com.bupt.heartarea.activity.LoginActivity">
+        <activity android:name="com.bupt.heartarea.activity.LoginActivity"
+            android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name="com.bupt.heartarea.activity.RegisterActivity">
+        <activity android:name="com.bupt.heartarea.activity.RegisterActivity"
+            android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name="com.bupt.heartarea.activity.ResultActivity">
+        <activity android:name="com.bupt.heartarea.activity.ResultActivity"
+            android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name="com.bupt.heartarea.activity.HistoryActivity">
+        <activity android:name="com.bupt.heartarea.activity.HistoryActivity"
+            android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name="com.bupt.heartarea.activity.WebActivity">
+        <activity android:name="com.bupt.heartarea.activity.WebActivity"
+            android:screenOrientation="portrait">
 
         </activity>
 
         <activity
             android:name="com.bupt.heartarea.activity.LogoActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -69,11 +78,13 @@
 
         </activity>
 
-        <activity android:name="com.bupt.heartarea.activity.MyInformationActivity">
+        <activity android:name="com.bupt.heartarea.activity.MyInformationActivity"
+            android:screenOrientation="portrait">
 
         </activity>
 
-        <activity android:name="com.bupt.heartarea.activity.ResetPwdActivity">
+        <activity android:name="com.bupt.heartarea.activity.ResetPwdActivity"
+            android:screenOrientation="portrait">
 
         </activity>
     </application>

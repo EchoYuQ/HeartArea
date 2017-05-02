@@ -3,6 +3,8 @@ package com.bupt.heartarea.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,15 +15,37 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.bupt.heartarea.bean.ResponseBean;
 import com.bupt.heartarea.ui.CircleIndicator;
 import com.bupt.heartarea.ui.LineIndicator;
 import com.bupt.heartarea.R;
 import com.bupt.heartarea.ui.IndicatorItem;
+import com.bupt.heartarea.utils.GlobalData;
+import com.google.gson.Gson;
+
+import net.lemonsoft.lemonbubble.LemonBubble;
+import net.lemonsoft.lemonhello.LemonHello;
+import net.lemonsoft.lemonhello.LemonHelloAction;
+import net.lemonsoft.lemonhello.LemonHelloInfo;
+import net.lemonsoft.lemonhello.LemonHelloView;
+import net.lemonsoft.lemonhello.adapter.LemonHelloEventDelegateAdapter;
+import net.lemonsoft.lemonhello.interfaces.LemonHelloActionDelegate;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class ResultActivity extends Activity implements View.OnClickListener{
+public class ResultActivity extends Activity implements View.OnClickListener {
 
     CircleIndicator ci1;
     LineIndicator mLiHeartRateProgress;
@@ -29,15 +53,17 @@ public class ResultActivity extends Activity implements View.OnClickListener{
 
     private int mHeartRate = 0;
     private int mFatigue = 0;
-    private int mBloodOxygen=0;
+    private int mBloodOxygen = 0;
     int mMiddleColor;
     int mLowColor;
     int mHighColor;
     int mFeedBackValue = 1;
+    int mSuccess=0;
     String mAlert;
     Button mBtnFeedBackYes;
     Button mBtnFeedBackNo;
-
+    LinearLayout mLlFeedBackAll;
+    private static final String URL_FEEDBACK = GlobalData.URL_HEAD + ":8080/detect3/SelfstatusServlet";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +83,7 @@ public class ResultActivity extends Activity implements View.OnClickListener{
         setHeartRateProgress(mHeartRate);
         testIndicator();
         setBloodOxygenProgress(mBloodOxygen);
-        Log.e("mBloodOxygen",mBloodOxygen+"");
+        Log.e("mBloodOxygen", mBloodOxygen + "");
     }
 
     private void initView() {
@@ -65,13 +91,13 @@ public class ResultActivity extends Activity implements View.OnClickListener{
         mLiBloodOxygenProgress = (LineIndicator) findViewById(R.id.li_progress_blood_oxygen);
         ci1 = (CircleIndicator) findViewById(R.id.ci_1);
 
-        mBtnFeedBackYes= (Button) findViewById(R.id.btn_result_yes);
+        mBtnFeedBackYes = (Button) findViewById(R.id.btn_result_yes);
         mBtnFeedBackYes.setOnClickListener(this);
 
-        mBtnFeedBackNo= (Button) findViewById(R.id.btn_result_no);
+        mBtnFeedBackNo = (Button) findViewById(R.id.btn_result_no);
         mBtnFeedBackNo.setOnClickListener(this);
 
-
+        mLlFeedBackAll= (LinearLayout) findViewById(R.id.ll_result_feedback_all);
 
     }
 
@@ -107,6 +133,7 @@ public class ResultActivity extends Activity implements View.OnClickListener{
 
     /**
      * 绘制 血氧值 进度条
+     *
      * @param value
      */
     private void setBloodOxygenProgress(int value) {
@@ -227,7 +254,7 @@ public class ResultActivity extends Activity implements View.OnClickListener{
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(ResultActivity.this, mFeedBackValue+"", Toast.LENGTH_SHORT).show();
+                        feedBack(0,mFeedBackValue);
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -242,14 +269,97 @@ public class ResultActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.btn_result_yes:
-
+                feedBack(1,0);
                 break;
             case R.id.btn_result_no:
                 showRadioButtonDialog();
                 break;
         }
+    }
+
+    /**
+     * 向服务器发送用户反馈信息
+     * @param success
+     * @param status
+     */
+    private void feedBack(final int success, final int status) {
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest request = new StringRequest(Request.Method.POST, URL_FEEDBACK,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        Gson gson = new Gson();
+
+                        ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
+
+
+                        if (responseBean!=null) {
+                            if (responseBean.getCode()==0)
+                            {
+//                                Toast.makeText(ResultActivity.this, responseBean.getMsg(), Toast.LENGTH_LONG).show();
+
+                                LemonBubble.getRightBubbleInfo()// 增加无限点语法修改bubbleInfo的特性
+                                        .setTitle("提交成功")
+                                        .setTitleFontSize(12)// 修改字体大小
+                                        .setTitleColor(Color.parseColor("#a269af73"))
+                                        .setMaskColor(Color.argb(100, 0, 0, 0))// 修改蒙版颜色
+                                        .show(ResultActivity.this, 2000);
+                                mLlFeedBackAll.setVisibility(View.GONE);
+
+//                LemonBubble.showRight(MainActivity.this, "这是一个成功的提示", 2000);
+
+//                                LemonHello.getSuccessHello("提交成功", "感谢您对我们的反馈，谢谢您的使用")
+//                                        .setContentFontSize(14)
+//                                        .addAction(new LemonHelloAction("我知道啦", new LemonHelloActionDelegate() {
+//                                            @Override
+//                                            public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
+//                                                helloView.hide();
+//                                                mLlFeedBackAll.setVisibility(View.GONE);
+//                                            }
+//                                        }))
+//                                        .setEventDelegate(new LemonHelloEventDelegateAdapter() {
+//                                            @Override
+//                                            public void onMaskTouch(LemonHelloView helloView, LemonHelloInfo helloInfo) {
+//                                                super.onMaskTouch(helloView, helloInfo);
+//                                                helloView.hide();
+//                                                mLlFeedBackAll.setVisibility(View.GONE);
+//                                            }
+//                                        })
+//                                        .show(ResultActivity.this);
+//                                mLlFeedBackAll.setVisibility(View.GONE);
+
+                            }
+                            else
+                            {
+                                Toast.makeText(ResultActivity.this, responseBean.getMsg(), Toast.LENGTH_LONG).show();
+                            }
+
+                        }else
+                        {
+                            Toast.makeText(ResultActivity.this, "解析失败", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("请求失败", volleyError.getMessage(), volleyError);
+                Toast.makeText(ResultActivity.this, "连接服务器失败，请检查网络", Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                //在这里设置需要post的参数
+                Map<String, String> map = new HashMap<>();
+                map.put("userid", GlobalData.userid);
+                map.put("success",String.valueOf(success));
+                map.put("status",String.valueOf(status));
+
+                return map;
+            }
+        };
+        requestQueue.add(request);
+
     }
 }

@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         // 收集数据版
-        applicationId "com.bupt.heartarea.alpha"
+        applicationId "com.bupt.heartarea"
         // 用户版
 //        applicationId "com.bupt.heartarea"
         minSdkVersion 14

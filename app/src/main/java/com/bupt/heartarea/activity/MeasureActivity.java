@@ -200,9 +200,9 @@ public class MeasureActivity extends Activity {
 
         m_ProgressWheel = (ProgressWheel) findViewById(com.bupt.heartarea.R.id.pw_heartrate);
         // 用户使用
-//        m_ProgressWheel.setMax(2 * AXISXMAX - 10);
+        m_ProgressWheel.setMax(3 * AXISXMAX - 10);
         // 收集数据使用
-        m_ProgressWheel.setMax(4 * AXISXMAX - 10);
+//        m_ProgressWheel.setMax(4 * AXISXMAX - 10);
     }
 
     private boolean calRealTimeHeartRate() {
@@ -509,9 +509,9 @@ public class MeasureActivity extends Activity {
 
                 // 如果有效数据采集到300个，就跳转到保存数据的界面
                 // 收集数据用
-                if (count == 4 * AXISXMAX) {
+//                if (count == 4 * AXISXMAX) {
 //                     用户使用
-//                if (count == 2 * AXISXMAX) {
+                if (count == 3 * AXISXMAX) {
 
                     UserDataBean userDataBean = new UserDataBean();
                     userDataBean.setDatas(mDatas);
@@ -600,16 +600,16 @@ public class MeasureActivity extends Activity {
 
                     //---------------------------------------------------------
                     // 1. 用于用户使用
-//                    postToServer(MeasureActivity.this);
+                    postToServer(MeasureActivity.this);
 
 
                     // 2. 用于收集数据使用
-                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("measure_data", mMeasureData);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-                    finish();
+//                    Intent intent = new Intent(MeasureActivity.this, SaveDataActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("measure_data", mMeasureData);
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
+//                    finish();
                     //-----------------------------------------------------------
 
 

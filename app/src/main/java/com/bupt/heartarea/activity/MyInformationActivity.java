@@ -29,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bupt.heartarea.R;
 import com.bupt.heartarea.bean.ResponseBean;
 import com.bupt.heartarea.utils.FileUtil;
 import com.bupt.heartarea.utils.GlobalData;
@@ -80,7 +81,7 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(com.bupt.heartarea.R.layout.activity_change_information);
+        setContentView(R.layout.activity_change_information);
         mContext = this;
         mActivity = this;
         initView();
@@ -93,19 +94,19 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
     }
 
     private void initView() {
-        mHeadPicture = (ImageView) findViewById(com.bupt.heartarea.R.id.id_iv_headpicture_change_information);
+        mHeadPicture = (ImageView) findViewById(R.id.id_iv_headpicture_change_information);
         Bitmap photo = FileUtil.readImageFromLocal(mContext, GlobalData.getTel() + "photo.png");
         if (photo != null) {
             mHeadPicture.setImageBitmap(photo);
         }
-        mBackIcon = (ImageView) findViewById(com.bupt.heartarea.R.id.id_iv_back);
-        mEtName = (EditText) findViewById(com.bupt.heartarea.R.id.id_et_name_change_information);
-        mEtEmail = (EditText) findViewById(com.bupt.heartarea.R.id.id_et_email_value);
-        mSave = (TextView) findViewById(com.bupt.heartarea.R.id.id_tv_save);
-        mTvSex = (TextView) findViewById(com.bupt.heartarea.R.id.id_tv_sex_value);
-        mTvBirthday = (TextView) findViewById(com.bupt.heartarea.R.id.id_tv_birthday_value);
-        mRL_birthday = (RelativeLayout) findViewById(com.bupt.heartarea.R.id.id_rl_birthday);
-        mRL_sex = (RelativeLayout) findViewById(com.bupt.heartarea.R.id.id_rl_sex);
+        mBackIcon = (ImageView) findViewById(R.id.id_iv_back);
+        mEtName = (EditText) findViewById(R.id.id_et_name_change_information);
+        mEtEmail = (EditText) findViewById(R.id.id_et_email_value);
+        mSave = (TextView) findViewById(R.id.id_tv_save);
+        mTvSex = (TextView) findViewById(R.id.id_tv_sex_value);
+        mTvBirthday = (TextView) findViewById(R.id.id_tv_birthday_value);
+        mRL_birthday = (RelativeLayout) findViewById(R.id.id_rl_birthday);
+        mRL_sex = (RelativeLayout) findViewById(R.id.id_rl_sex);
 
         mEtName.setText(GlobalData.getUsername());
         mEtEmail.setText(GlobalData.getEmail());
@@ -128,19 +129,19 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case com.bupt.heartarea.R.id.id_iv_headpicture_change_information:
+            case R.id.id_iv_headpicture_change_information:
                 showPhotoDialog();
                 break;
-            case com.bupt.heartarea.R.id.id_iv_back:
+            case R.id.id_iv_back:
                 finish();
                 break;
-            case com.bupt.heartarea.R.id.id_tv_save:
+            case R.id.id_tv_save:
                 saveToSever();
                 break;
-            case com.bupt.heartarea.R.id.id_rl_birthday:
+            case R.id.id_rl_birthday:
                 showDatePickerDialog();
                 break;
-            case com.bupt.heartarea.R.id.id_rl_sex:
+            case R.id.id_rl_sex:
                 showSexDialog();
                 break;
 

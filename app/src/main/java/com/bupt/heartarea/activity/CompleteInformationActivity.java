@@ -107,8 +107,10 @@ public class CompleteInformationActivity extends Activity implements View.OnClic
                     break;
                 } else {
                     int length = mName.length();
-                    if (length > 8 || length < 2)
+                    if (length > 8 || length < 2) {
                         Toast.makeText(CompleteInformationActivity.this, "昵称长度应为2~8个字符", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
                 }
 
                 if (mTvSex.getText().toString() == null || mTvSex.getText().toString().equals("")) {

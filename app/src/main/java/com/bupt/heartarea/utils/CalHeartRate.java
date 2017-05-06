@@ -16,37 +16,59 @@ public class CalHeartRate {
      */
     public static List<Integer> findPeaks(double[] datas) {
         List<Integer> list = new ArrayList<Integer>();
+        int last_index = Integer.MIN_VALUE;
         int length = datas.length;
-        for (int i = 1; i < length - 4; i++) {
-            if (datas[i] > datas[i - 1] && datas[i] > datas[i + 1]) {
-                if (i + 2 < length) {
-                    if (datas[i] > datas[i + 2]) {
-//                        if(calDiff(datas[i-2],datas[i-1],datas[i+1],datas[i+2])<0)
-//                        {
+//        for (int i = 1; i < length - 4; i++) {
+//            if (datas[i] > datas[i - 1] && datas[i] > datas[i + 1]) {
+//                if (i + 2 < length) {
+//                    if (datas[i] > datas[i + 2]) {
+////                        if(calDiff(datas[i-2],datas[i-1],datas[i+1],datas[i+2])<0)
+////                        {
+////                            list.add(i);
+////                        }
+//
+//                        if (i + 3 < length) {
+//                            if (datas[i] > datas[i + 3]) {
+//                                if (i + 4 < length) {
+//                                    if (datas[i] > datas[i + 4]) {
+//                                        list.add(i);
+//                                    }
+//                                } else {
+//                                    list.add(i);
+//                                }
+//
+//                            }
+//                        } else {
 //                            list.add(i);
 //                        }
+//
+//                    }
+//                } else {
+//                    list.add(i);
+//                }
+//
+//            }
+//
+//
+//        }
 
-                        if (i + 3 < length) {
-                            if (datas[i] > datas[i + 3]) {
-                                if (i + 4 < length) {
-                                    if (datas[i] > datas[i + 4]) {
-                                        list.add(i);
-                                    }
-                                } else {
-                                    list.add(i);
-                                }
-
-                            }
-                        } else {
-                            list.add(i);
-                        }
-
-                    }
-                } else {
+        for (int i = 1; i < length - 8; i++) {
+            if (datas[i] > datas[i - 1] && datas[i] > datas[i + 1]
+                    && datas[i] > datas[i + 2]
+                    && datas[i] > datas[i + 3]
+                    && datas[i] > datas[i + 4]
+                    && datas[i] > datas[i + 5]
+                    && datas[i] > datas[i + 6]
+                    && datas[i] > datas[i + 7]
+                    ) {
+                if(i-last_index>10)
+                {
                     list.add(i);
+                    last_index=i;
                 }
-
             }
+
+
         }
         System.out.println("findPeaks()");
         System.out.println(list);
@@ -146,23 +168,24 @@ public class CalHeartRate {
         List<Integer> rrList = new ArrayList<Integer>();
         int length = peaks_list.size();
         for (int i = 0; i < length - 1; i++)
-            rrList.add( (peaks_list.get(i + 1) - peaks_list.get(i)));
+            rrList.add((peaks_list.get(i + 1) - peaks_list.get(i)));
         return rrList;
     }
 
 
     /**
      * 计算rr间隔
+     *
      * @param peaks_list 峰下标列表
-     * @param interval 两次采样的时间间隔
+     * @param interval   两次采样的时间间隔
      * @return
      */
-    public static List<Integer> calRRInteval(List<Integer> peaks_list,int interval) {
+    public static List<Integer> calRRInteval(List<Integer> peaks_list, int interval) {
         if (peaks_list == null || peaks_list.size() == 0) return null;
         List<Integer> rrList = new ArrayList<Integer>();
         int length = peaks_list.size();
         for (int i = 0; i < length - 1; i++)
-            rrList.add( (peaks_list.get(i + 1) - peaks_list.get(i))*interval);
+            rrList.add((peaks_list.get(i + 1) - peaks_list.get(i)) * interval);
         return rrList;
     }
 

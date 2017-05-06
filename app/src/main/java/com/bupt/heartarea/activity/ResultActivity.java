@@ -308,27 +308,6 @@ public class ResultActivity extends Activity implements View.OnClickListener {
                                         .show(ResultActivity.this, 2000);
                                 mLlFeedBackAll.setVisibility(View.GONE);
 
-//                LemonBubble.showRight(MainActivity.this, "这是一个成功的提示", 2000);
-
-//                                LemonHello.getSuccessHello("提交成功", "感谢您对我们的反馈，谢谢您的使用")
-//                                        .setContentFontSize(14)
-//                                        .addAction(new LemonHelloAction("我知道啦", new LemonHelloActionDelegate() {
-//                                            @Override
-//                                            public void onClick(LemonHelloView helloView, LemonHelloInfo helloInfo, LemonHelloAction helloAction) {
-//                                                helloView.hide();
-//                                                mLlFeedBackAll.setVisibility(View.GONE);
-//                                            }
-//                                        }))
-//                                        .setEventDelegate(new LemonHelloEventDelegateAdapter() {
-//                                            @Override
-//                                            public void onMaskTouch(LemonHelloView helloView, LemonHelloInfo helloInfo) {
-//                                                super.onMaskTouch(helloView, helloInfo);
-//                                                helloView.hide();
-//                                                mLlFeedBackAll.setVisibility(View.GONE);
-//                                            }
-//                                        })
-//                                        .show(ResultActivity.this);
-//                                mLlFeedBackAll.setVisibility(View.GONE);
 
                             }
                             else

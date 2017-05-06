@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -199,6 +200,9 @@ public class MineFragment extends Fragment {
         } else {
             mIvUimage.setImageResource(R.drawable.user_image);
         }
+
+        mTvName.setText(GlobalData.username);
+        Log.i("GlobalData.username",GlobalData.username);
         super.onResume();
     }
 }

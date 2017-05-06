@@ -37,6 +37,8 @@ public class HistroyFragment extends Fragment {
         picker = (DatePicker) view.findViewById(com.bupt.heartarea.R.id.main_dp);
         picker.setDate(mYear, mMonth);
         picker.setMode(DPMode.SINGLE);
+        picker.setFestivalDisplay(false);
+        picker.setHolidayDisplay(false);
         picker.setOnDatePickedListener(new DatePicker.OnDatePickedListener() {
             @Override
             public void onDatePicked(String date) {

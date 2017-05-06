@@ -2,6 +2,7 @@ package com.bupt.heartarea.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -75,7 +76,7 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
 
     // 用户缓存
     private SharedPreferences preferences;
-    private static final String URL_CHANGE_INFORMATION = GlobalData.URL_HEAD+":8080/detect3/ChangeServlet";
+    private static final String URL_CHANGE_INFORMATION = GlobalData.URL_HEAD + ":8080/detect3/ChangeServlet";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,10 +137,30 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
                 finish();
                 break;
             case R.id.id_tv_save:
+                mName = mEtName.getText().toString().trim();
+                if (mName == null || mName.equals("")) {
+                    Toast.makeText(MyInformationActivity.this, "请输入您的昵称", Toast.LENGTH_SHORT).show();
+                    break;
+                } else {
+                    int length = mName.length();
+                    if (length > 8 || length < 2) {
+                        Toast.makeText(MyInformationActivity.this, "昵称长度应为2~8个字符", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                }
+
+                if (mTvSex.getText().toString() == null || mTvSex.getText().toString().equals("")) {
+                    Toast.makeText(MyInformationActivity.this, "请选择您的性别", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                if (mTvBirthday.getText().toString() == null || mTvBirthday.getText().toString().equals("")) {
+                    Toast.makeText(MyInformationActivity.this, "请选择您的生日", Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 saveToSever();
                 break;
             case R.id.id_rl_birthday:
-                showDatePickerDialog();
+                showDatePickerDialog1();
                 break;
             case R.id.id_rl_sex:
                 showSexDialog();
@@ -313,10 +334,10 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        String[] dates=date.split("-");
-                        if(Integer.parseInt(dates[1])<10) dates[1]="0"+dates[1];
-                        if(Integer.parseInt(dates[2])<10) dates[2]="0"+dates[2];
-                        String new_date=dates[0]+"-"+dates[1]+"-"+dates[2];
+                        String[] dates = date.split("-");
+                        if (Integer.parseInt(dates[1]) < 10) dates[1] = "0" + dates[1];
+                        if (Integer.parseInt(dates[2]) < 10) dates[2] = "0" + dates[2];
+                        String new_date = dates[0] + "-" + dates[1] + "-" + dates[2];
                         mBirthday = new_date;
                         mTvBirthday.setText(new_date);
                     }
@@ -336,15 +357,21 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
             @Override
             public void onResponse(String s) {
                 Gson gson = new Gson();
+
                 ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
-                if (responseBean.getCode() == 0) {
-                    GlobalData.username=(mName);
-                    GlobalData.sex=(mSex_Int);
-                    GlobalData.email=(mEmail);
-                    GlobalData.birthday=(mTvBirthday.getText().toString().trim());
-                    Toast.makeText(mContext, "修改成功", Toast.LENGTH_LONG).show();
-                    finish();
+                if (responseBean != null) {
+                    if (responseBean.getCode() == 0) {
+                        GlobalData.username = mName;
+                        GlobalData.sex = (mSex_Int);
+                        GlobalData.email = (mEmail);
+                        GlobalData.birthday = (mTvBirthday.getText().toString().trim());
+                        Toast.makeText(mContext, "修改成功", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(mContext, "请求服务器错误", Toast.LENGTH_LONG).show();
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -371,6 +398,35 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
         queue.add(stringRequest);
 
 
+    }
+
+    private DatePickerDialog.OnDateSetListener Datelistener = new DatePickerDialog.OnDateSetListener() {
+        String year, month, day;
+
+        @Override
+        public void onDateSet(android.widget.DatePicker view, int myyear, int monthOfYear, int dayOfMonth) {
+            //修改year、month、day的变量值，以便以后单击按钮时，DatePickerDialog上显示上一次修改后的值
+            year = String.valueOf(myyear);
+            month = String.valueOf(monthOfYear + 1);
+            day = String.valueOf(dayOfMonth);
+            //更新日期
+            updateDate();
+        }
+
+
+        //当DatePickerDialog关闭时，更新日期显示
+        private void updateDate() {
+            if (Integer.parseInt(month) < 10) month = "0" + month;
+            if (Integer.parseInt(day) < 10) day = "0" + day;
+            String new_date = year + "-" + month + "-" + day;
+            mBirthday = new_date;
+            mTvBirthday.setText(new_date);
+        }
+    };
+
+    private void showDatePickerDialog1() {
+        DatePickerDialog dpd = new DatePickerDialog(MyInformationActivity.this, Datelistener, 1990, 0, 1);
+        dpd.show();//显示DatePickerDialog组件
     }
 
 

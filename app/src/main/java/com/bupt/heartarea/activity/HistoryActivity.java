@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -25,6 +26,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bupt.heartarea.bean.HistoryDataItemBean;
 import com.bupt.heartarea.bean.ResponseBean;
+import com.bupt.heartarea.fragment.DayHistoryFragment1;
 import com.bupt.heartarea.fragment.MonthHistoryFragment;
 import com.bupt.heartarea.fragment.WeekHistoryFragment;
 import com.bupt.heartarea.utils.GlobalData;
@@ -48,7 +50,6 @@ import java.util.Map;
 public class HistoryActivity extends Activity implements View.OnClickListener {
     // 端口号为8080
     private static final String URL_HISTORY = GlobalData.URL_HEAD + ":8080/detect3/HistoryServlet";
-    // 临时测试用
     RadioGroup mRadioGroup;
     RadioButton mRbDay;
     RadioButton mRbWeek;
@@ -56,7 +57,7 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
 
     WeekHistoryFragment mWeekHistoryFragment;
     MonthHistoryFragment mMonthHistoryFragment;
-    DayHistoryFragment mDayHistoryFragment;
+    DayHistoryFragment1 mDayHistoryFragment;
 
     ImageView mIvLast;
     ImageView mIvNext;
@@ -253,7 +254,6 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
                     @Override
                     public void onResponse(String response) {
                         Log.d("请求成功", "response -> " + response);
-//                        Toast.makeText(context, response, Toast.LENGTH_LONG).show();
 
                         Gson gson = new Gson();
 
@@ -293,28 +293,15 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
                             switch (type) {
                                 case DAY:
 
-//                                    GlobalData.historyDataItemBeanList.clear();
-//
-//
-//                                    mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:20:30", 50, 90, 95));
-//                                    GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
-
-
-                                    mDayHistoryFragment = new DayHistoryFragment();
+                                    mDayHistoryFragment = new DayHistoryFragment1();
                                     transaction.replace(R.id.fl_history, mDayHistoryFragment);
                                     break;
                                 case WEEK:
-
-//                                    GlobalData.historyDataItemBeanList.clear();
-//                                    GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
 
                                     mWeekHistoryFragment = new WeekHistoryFragment();
                                     transaction.replace(R.id.fl_history, mWeekHistoryFragment);
                                     break;
                                 case MONTH:
-//
-//                                    GlobalData.historyDataItemBeanList.clear();
-//                                    GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
 
                                     mMonthHistoryFragment = new MonthHistoryFragment();
                                     transaction.replace(R.id.fl_history, mMonthHistoryFragment);
@@ -328,6 +315,37 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
                             MyAdapter adapter=new MyAdapter(HistoryActivity.this,getData());
                             mListView.setAdapter(adapter);
                             transaction.commit();
+                        }else if(responseBean.getCode() == 20000)
+                        {
+                            Toast.makeText(HistoryActivity.this, "该时段内没有历史数据", Toast.LENGTH_SHORT).show();
+                            GlobalData.historyDataItemBeanList.clear();
+                            mHistoryDataItemList.clear();
+
+                            switch (type) {
+                                case DAY:
+                                    mDayHistoryFragment = new DayHistoryFragment1();
+                                    transaction.replace(R.id.fl_history, mDayHistoryFragment);
+                                    break;
+                                case WEEK:
+
+                                    mWeekHistoryFragment = new WeekHistoryFragment();
+                                    transaction.replace(R.id.fl_history, mWeekHistoryFragment);
+                                    break;
+                                case MONTH:
+
+                                    mMonthHistoryFragment = new MonthHistoryFragment();
+                                    transaction.replace(R.id.fl_history, mMonthHistoryFragment);
+
+                                    break;
+
+                            }
+//                            SimpleAdapter adapter = new SimpleAdapter(HistoryActivity.this, getData(), R.layout.list_item1,
+//                                    new String[]{"image", "day", "time", "value", "suggestion"},
+//                                    new int[]{R.id.item_iv_image, R.id.item_tv_day, R.id.item_tv_time, R.id.item_tv_value, R.id.item_tv_suggetion});
+                            MyAdapter adapter=new MyAdapter(HistoryActivity.this,getData());
+                            mListView.setAdapter(adapter);
+                            transaction.commit();
+
                         }
 
 
@@ -340,99 +358,99 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e("请求失败", error.getMessage(), error);
-                switch (type) {
-                    case DAY:
-                        mHistoryDataItemList.clear();
-
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:20:30", 50, 90, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:46:30", 50, 99, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "05:20:30", 50, 86, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:10:30", 50, 75, 99));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:50:30", 50, 63, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "09:20:30", 45, 65, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:40:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:45:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "13:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "14:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "15:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "16:20:30", 50, 75, 95));
-
-                        GlobalData.historyDataItemBeanList.clear();
-                        GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
-
-                        mDayHistoryFragment = new DayHistoryFragment();
-                        transaction.replace(R.id.fl_history, mDayHistoryFragment);
-
-                        break;
-                    case WEEK:
-                        mHistoryDataItemList.clear();
-
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:20:30", 50, 90, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:46:30", 50, 99, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "05:20:30", 50, 86, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:10:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-04", "08:50:30", 50, 63, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "09:20:30", 50, 65, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "12:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-06", "12:40:30", 50, 90, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "12:45:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "13:20:30", 50, 79, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "14:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "15:20:30", 50, 70, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "19:20:30", 50, 70, 95));
-
-                        GlobalData.historyDataItemBeanList.clear();
-                        GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
-
-                        mWeekHistoryFragment = new WeekHistoryFragment();
-                        transaction.replace(R.id.fl_history, mWeekHistoryFragment);
-                        break;
-                    case MONTH:
-                        mHistoryDataItemList.clear();
-
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:20:30", 50, 90, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:46:30", 50, 99, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "05:20:30", 50, 86, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:10:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-04", "08:50:30", 50, 63, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "09:20:30", 50, 65, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "12:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-06", "12:40:30", 50, 90, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "12:45:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "13:20:30", 50, 79, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "14:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "15:20:30", 50, 70, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-11", "03:20:30", 50, 90, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-11", "03:46:30", 50, 99, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-13", "05:20:30", 50, 86, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-13", "08:10:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-13", "08:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-14", "08:50:30", 50, 63, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-15", "09:20:30", 50, 65, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-15", "12:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-26", "12:40:30", 50, 90, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "12:45:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "13:20:30", 50, 79, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "14:20:30", 50, 75, 95));
-                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "15:20:30", 50, 70, 95));
-
-                        GlobalData.historyDataItemBeanList.clear();
-                        GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
-                        mMonthHistoryFragment = new MonthHistoryFragment();
-                        transaction.replace(R.id.fl_history, mMonthHistoryFragment);
-                        break;
-                }
-
-
-                Log.i(" size", mHistoryDataItemList.size() + "");
-                MyAdapter adapter=new MyAdapter(HistoryActivity.this,getData());
-
-                mListView.setAdapter(adapter);
-                transaction.commit();
+//                switch (type) {
+//                    case DAY:
+//                        mHistoryDataItemList.clear();
+//
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:20:30", 50, 90, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "03:46:30", 50, 99, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "05:20:30", 50, 86, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:10:30", 50, 75, 99));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "08:50:30", 50, 63, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "09:20:30", 45, 65, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:40:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "12:45:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "13:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "14:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "15:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2015-10-08", "16:20:30", 50, 75, 95));
+//
+//                        GlobalData.historyDataItemBeanList.clear();
+//                        GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
+//
+//                        mDayHistoryFragment = new DayHistoryFragment();
+//                        transaction.replace(R.id.fl_history, mDayHistoryFragment);
+//
+//                        break;
+//                    case WEEK:
+//                        mHistoryDataItemList.clear();
+//
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:20:30", 50, 90, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:46:30", 50, 99, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "05:20:30", 50, 86, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:10:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-04", "08:50:30", 50, 63, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "09:20:30", 50, 65, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "12:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-06", "12:40:30", 50, 90, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "12:45:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "13:20:30", 50, 79, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "14:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "15:20:30", 50, 70, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "19:20:30", 50, 70, 95));
+//
+//                        GlobalData.historyDataItemBeanList.clear();
+//                        GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
+//
+//                        mWeekHistoryFragment = new WeekHistoryFragment();
+//                        transaction.replace(R.id.fl_history, mWeekHistoryFragment);
+//                        break;
+//                    case MONTH:
+//                        mHistoryDataItemList.clear();
+//
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:20:30", 50, 90, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-01", "03:46:30", 50, 99, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "05:20:30", 50, 86, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:10:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-03", "08:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-04", "08:50:30", 50, 63, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "09:20:30", 50, 65, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-05", "12:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-06", "12:40:30", 50, 90, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "12:45:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "13:20:30", 50, 79, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "14:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "15:20:30", 50, 70, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-11", "03:20:30", 50, 90, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-11", "03:46:30", 50, 99, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-13", "05:20:30", 50, 86, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-13", "08:10:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-13", "08:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-14", "08:50:30", 50, 63, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-15", "09:20:30", 50, 65, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-15", "12:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-26", "12:40:30", 50, 90, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "12:45:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "13:20:30", 50, 79, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "14:20:30", 50, 75, 95));
+//                        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-27", "15:20:30", 50, 70, 95));
+//
+//                        GlobalData.historyDataItemBeanList.clear();
+//                        GlobalData.historyDataItemBeanList = new ArrayList<>(mHistoryDataItemList);
+//                        mMonthHistoryFragment = new MonthHistoryFragment();
+//                        transaction.replace(R.id.fl_history, mMonthHistoryFragment);
+//                        break;
+//                }
+//
+//
+//                Log.i(" size", mHistoryDataItemList.size() + "");
+//                MyAdapter adapter=new MyAdapter(HistoryActivity.this,getData());
+//
+//                mListView.setAdapter(adapter);
+//                transaction.commit();
             }
         }
 
@@ -484,7 +502,7 @@ public class HistoryActivity extends Activity implements View.OnClickListener {
         FragmentTransaction transaction = mManager.beginTransaction();
         switch (mTimeType) {
             case DAY:
-                mDayHistoryFragment  = new DayHistoryFragment();
+                mDayHistoryFragment  = new DayHistoryFragment1();
                 transaction.replace(R.id.fl_history, mDayHistoryFragment);
                 break;
             case WEEK:

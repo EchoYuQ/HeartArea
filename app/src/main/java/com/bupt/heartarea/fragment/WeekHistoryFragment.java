@@ -264,18 +264,21 @@ public class WeekHistoryFragment extends Fragment {
         @Override
         public void onColumnValueSelected(int columnIndex, int subcolumnIndex, SubcolumnValue value) {
 //            Toast.makeText(getActivity(), days[columnIndex] + "您的心率最大值为" + value.getValueTop() + ",最小值为" + value.getValueBottom(), Toast.LENGTH_SHORT).show();
-            switch (GlobalData.currenttype)
-            {
+            String date = days[columnIndex];
+            String[] date_array = date.split("-");
+            int month = Integer.valueOf(date_array[0]);
+            int day = Integer.valueOf(date_array[1]);
+            switch (GlobalData.currenttype) {
                 case HEART_RATE:
-                    Toast.makeText(getActivity(),"在"+ days[columnIndex]  + "日，您的心率最大值为"
+                    Toast.makeText(getActivity(), "在" + month + "月" + day + "日，您的心率最大值为"
                             + value.getValueTop() + ",最小值为" + value.getValueBottom(), Toast.LENGTH_SHORT).show();
                     break;
                 case PRESSURE:
-                    Toast.makeText(getActivity(),"在"+ days[columnIndex]  + "日，您的疲劳度最大值为"
+                    Toast.makeText(getActivity(), "在" + month + "月" + day + "日，您的疲劳度最大值为"
                             + value.getValueTop() + ",最小值为" + value.getValueBottom(), Toast.LENGTH_SHORT).show();
                     break;
                 case BLOOD_OXYGEN:
-                    Toast.makeText(getActivity(),"在"+ days[columnIndex]  + "日，您的血氧最大值为"
+                    Toast.makeText(getActivity(), "在" + month + "月" + day + "日，您的血氧最大值为"
                             + value.getValueTop() + ",最小值为" + value.getValueBottom(), Toast.LENGTH_SHORT).show();
                     break;
             }
@@ -284,18 +287,23 @@ public class WeekHistoryFragment extends Fragment {
         @Override
         public void onPointValueSelected(int lineIndex, int pointIndex, PointValue value) {
 //            Toast.makeText(getActivity(), days[(int) value.getX()] + "您的心率平均值为" + value.getY(), Toast.LENGTH_SHORT).show();
-            switch (GlobalData.currenttype)
-            {
+            String date = days[(int) value.getX()];
+            String[] date_array = date.split("-");
+            int month = Integer.valueOf(date_array[0]);
+            int day = Integer.valueOf(date_array[1]);
+            switch (GlobalData.currenttype) {
+
+
                 case HEART_RATE:
-                    Toast.makeText(getActivity(),"在"+ days[(int) value.getX()] + "日，您的心率平均值为"
+                    Toast.makeText(getActivity(), "在" + month + "月" + day + "日，您的心率平均值为"
                             + value.getY(), Toast.LENGTH_SHORT).show();
                     break;
                 case PRESSURE:
-                    Toast.makeText(getActivity(),"在"+ days[(int) value.getX()] + "日，您的疲劳度平均值为"
+                    Toast.makeText(getActivity(), "在" + month + "月" + day + "日，您的疲劳度平均值为"
                             + value.getY(), Toast.LENGTH_SHORT).show();
                     break;
                 case BLOOD_OXYGEN:
-                    Toast.makeText(getActivity(),"在"+ days[(int) value.getX()] + "日，您的血氧平均值为"
+                    Toast.makeText(getActivity(), "在" + month + "月" + day + "日，您的血氧平均值为"
                             + value.getY(), Toast.LENGTH_SHORT).show();
                     break;
             }
@@ -384,8 +392,6 @@ public class WeekHistoryFragment extends Fragment {
     }
 
 
-
-
     /**
      * 将 2017-3-20等时间转化成x坐标
      *
@@ -394,17 +400,17 @@ public class WeekHistoryFragment extends Fragment {
      */
     private int calculateX(String date, String date_now) {
 
-        int res=-1;
+        int res = -1;
         String[] date_array = date.split("-");
         String[] date_now_array = date_now.split("-");
         if (date_array.length > 0) {
-            res=calculateX(Integer.parseInt(date_array[0]),
+            res = calculateX(Integer.parseInt(date_array[0]),
                     Integer.parseInt(date_array[1]),
                     Integer.parseInt(date_array[2]),
                     Integer.parseInt(date_now_array[0]),
                     Integer.parseInt(date_now_array[1]),
                     Integer.parseInt(date_now_array[2]));
-            Log.i("calculateX res","date "+ date+"" +res);
+            Log.i("calculateX res", "date " + date + "" + res);
             return res;
         } else {
             Log.e("calculateX()错误", "日期格式不对，应为2017-02-12");
@@ -487,24 +493,21 @@ public class WeekHistoryFragment extends Fragment {
 //        mHistoryDataItemList.add(new HistoryDataItemBean("2017-02-07", "15:20:30", 50, 70, 95));
 
 
-        for (HistoryDataItemBean item:historyList)
-        {
-            switch (GlobalData.currenttype)
-            {
+        for (HistoryDataItemBean item : historyList) {
+            switch (GlobalData.currenttype) {
                 case HEART_RATE:
-                    listList.get(calculateX(item.getDate(),GlobalData.select_date)).add((float)item.getHeart_rate());
+                    listList.get(calculateX(item.getDate(), GlobalData.select_date)).add((float) item.getHeart_rate());
                     break;
                 case BLOOD_OXYGEN:
-                    listList.get(calculateX(item.getDate(),GlobalData.select_date)).add((float)item.getBlood_oxygen());
+                    listList.get(calculateX(item.getDate(), GlobalData.select_date)).add((float) item.getBlood_oxygen());
                     break;
                 case PRESSURE:
-                    listList.get(calculateX(item.getDate(),GlobalData.select_date)).add((float)item.getPressure());
+                    listList.get(calculateX(item.getDate(), GlobalData.select_date)).add((float) item.getPressure());
                     break;
             }
 
 
         }
-
 
 
         List<Line> lines = new ArrayList<Line>();

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bupt.heartarea.activity.HistoryActivity;
+import com.bupt.heartarea.utils.GlobalData;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -43,7 +44,7 @@ public class HistroyFragment extends Fragment {
             @Override
             public void onDatePicked(String date) {
                 Context context=getActivity().getApplicationContext();
-                Toast.makeText(context, date, Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, date, Toast.LENGTH_LONG).show();
                 Intent intent=new Intent(context, HistoryActivity.class);
                 Bundle bundle=new Bundle();
                 String[] dates=date.split("-");
@@ -51,7 +52,7 @@ public class HistroyFragment extends Fragment {
                 if(Integer.parseInt(dates[2])<10) dates[2]="0"+dates[2];
                 String new_date=dates[0]+"-"+dates[1]+"-"+dates[2];
                 bundle.putString("date",new_date);
-//                GlobalData.select_date="2017-02-07";
+                GlobalData.select_date=new_date;
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

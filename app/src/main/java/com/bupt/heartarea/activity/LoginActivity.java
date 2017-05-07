@@ -173,45 +173,49 @@ public class LoginActivity extends Activity {
 
                         // TODO: 2017/3/20 加一个GlobalData
 
-                        if (responseBean.getCode() == 0) {
-                            // 保存账号密码
-                            saveAccountAndPwd();
-//                            JSONObject jsonObject = (JSONObject) responseBean.getBody();
-//                            try {
-//                                if (jsonObject.has("userid"))
-//                                    GlobalData.setUserid(jsonObject.getString("userid"));
-//                                if (jsonObject.has("sex"))
-//                                    GlobalData.setSex(jsonObject.getInt("sex"));
-//                                if (jsonObject.has("birthday"))
-//                                    GlobalData.setBirthday(jsonObject.getString("birthday"));
-//                                if (jsonObject.has("tel"))
-//                                    GlobalData.setTel(jsonObject.getString("tel"));
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
+                        if (responseBean!=null)
+                        {
+                            if (responseBean.getCode() == 0) {
+                                // 保存账号密码
+                                saveAccountAndPwd();
 
-                            String jsonString =  responseBean.getBody();
-                            try {
-                                JSONObject jsonObject = new JSONObject(jsonString);
-                                if (jsonObject.has("username"))
-                                    GlobalData.username=jsonObject.getString("username");
-                                if (jsonObject.has("userid"))
-                                    GlobalData.userid=(jsonObject.getString("userid"));
-                                if (jsonObject.has("sex"))
-                                    GlobalData.sex=(jsonObject.getInt("sex"));
-                                if (jsonObject.has("birthday"))
-                                    GlobalData.birthday=(jsonObject.getString("birthday"));
-                                if (jsonObject.has("tel"))
-                                    GlobalData.tel=(jsonObject.getString("tel"));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                String jsonString =  responseBean.getBody();
+                                try {
+                                    JSONObject jsonObject = new JSONObject(jsonString);
+                                    if (jsonObject.has("username"))
+                                        GlobalData.username=jsonObject.getString("username");
+                                    if (jsonObject.has("userid"))
+                                        GlobalData.userid=(jsonObject.getString("userid"));
+                                    if (jsonObject.has("sex"))
+                                        GlobalData.sex=(jsonObject.getInt("sex"));
+                                    if (jsonObject.has("birthday"))
+                                        GlobalData.birthday=(jsonObject.getString("birthday"));
+                                    if (jsonObject.has("tel"))
+                                        GlobalData.tel=(jsonObject.getString("tel"));
+                                    if (jsonObject.has("iscompletedinfo"))
+                                        GlobalData.is_complete_info=(jsonObject.getInt("iscompletedinfo"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                if (GlobalData.is_complete_info==1)
+                                {
+                                    // 到主界面
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                }else
+                                {
+                                    Intent intent = new Intent(LoginActivity.this, CompleteInformationActivity.class);
+                                    startActivity(intent);
+                                }
+                                finish();
                             }
+                        }else
+                        {
+                            Toast.makeText(LoginActivity.this, "连接服务器失败，请检查网络", Toast.LENGTH_SHORT).show();
 
-                            // 到主界面
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish();
                         }
+
 
 
                     }

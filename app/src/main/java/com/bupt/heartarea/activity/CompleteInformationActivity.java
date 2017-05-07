@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +46,7 @@ public class CompleteInformationActivity extends Activity implements View.OnClic
     LinearLayout mRL_birthday, mRL_sex;
     Button mBtnSubmit;
     Activity mActivity;
+    ImageView mIconBack;
     Context mContext;
     private int mSex_Int = 0;
     private String mBirthday;
@@ -82,8 +85,9 @@ public class CompleteInformationActivity extends Activity implements View.OnClic
         mTvBirthday = (TextView) findViewById(R.id.tv_birthday_complete_information);
         mRL_birthday = (LinearLayout) findViewById(R.id.ll_birthday_complete_information);
         mRL_sex = (LinearLayout) findViewById(R.id.ll_sex_complete_information);
+        mIconBack= (ImageView) findViewById(R.id.iv_back_complete_information);
 
-            mTvSex.setText(items_sex[mSex_Int]);
+        mTvSex.setText(items_sex[mSex_Int]);
 
 
 //        mBackIcon.setOnClickListener(this);
@@ -91,6 +95,7 @@ public class CompleteInformationActivity extends Activity implements View.OnClic
         mBtnSubmit.setOnClickListener(this);
         mRL_birthday.setOnClickListener(this);
         mRL_sex.setOnClickListener(this);
+        mIconBack.setOnClickListener(this);
     }
 
     @Override
@@ -129,6 +134,9 @@ public class CompleteInformationActivity extends Activity implements View.OnClic
                 break;
             case R.id.ll_sex_complete_information:
                 showSexDialog();
+                break;
+            case R.id.iv_back_complete_information:
+                finish();
                 break;
 
         }
@@ -212,7 +220,10 @@ public class CompleteInformationActivity extends Activity implements View.OnClic
                         GlobalData.email = (mEmail);
                         GlobalData.birthday = (mTvBirthday.getText().toString().trim());
                         Toast.makeText(mContext, "修改成功", Toast.LENGTH_LONG).show();
+                        Intent intent=new Intent(CompleteInformationActivity.this,MainActivity.class);
+                        startActivity(intent);
                         finish();
+
                     }
                 } else {
                     Toast.makeText(mContext, "数据解析错误", Toast.LENGTH_LONG).show();

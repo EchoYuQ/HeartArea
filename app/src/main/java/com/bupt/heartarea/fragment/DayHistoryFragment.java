@@ -367,16 +367,16 @@ public class DayHistoryFragment extends Fragment {
         public void onPointValueSelected(int lineIndex, int pointIndex, PointValue value) {
             switch (GlobalData.currenttype) {
                 case HEART_RATE:
-                    Toast.makeText(getActivity(), "时间：" + mHistoryDataItemList.get(pointIndex).getTime() +
-                            "心率为：" + mHistoryDataItemList.get(pointIndex).getHeart_rate(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "测量时间：" + mHistoryDataItemList.get(pointIndex).getTime() +
+                            " 心率为：" + mHistoryDataItemList.get(pointIndex).getHeart_rate(), Toast.LENGTH_SHORT).show();
                     break;
                 case PRESSURE:
-                    Toast.makeText(getActivity(), "时间：" + mHistoryDataItemList.get(pointIndex).getTime() +
-                            "疲劳度为：" + mHistoryDataItemList.get(pointIndex).getPressure() , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "测量时间：" + mHistoryDataItemList.get(pointIndex).getTime() +
+                            " 疲劳度为：" + mHistoryDataItemList.get(pointIndex).getPressure() , Toast.LENGTH_SHORT).show();
                     break;
                 case BLOOD_OXYGEN:
-                    Toast.makeText(getActivity(), "时间：" + mHistoryDataItemList.get(pointIndex).getTime() +
-                            "血氧为：" + mHistoryDataItemList.get(pointIndex).getBlood_oxygen() , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "测量时间：" + mHistoryDataItemList.get(pointIndex).getTime() +
+                            " 血氧为：" + mHistoryDataItemList.get(pointIndex).getBlood_oxygen() , Toast.LENGTH_SHORT).show();
                     break;
 
 

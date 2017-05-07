@@ -12,6 +12,7 @@ import java.util.List;
 public class GlobalData {
 
     public static String select_date="";
+    public static int is_complete_info=0;
     public static String userid="2";
     public static String sid;
     public static final String URL_HEAD = "http://47.92.80.155";
@@ -24,6 +25,8 @@ public class GlobalData {
     public static String birthday;
     // 邮箱
     public static String email;
+    // 在日历上选择的日期
+//    public static String
 
     public static enum MeasureType {HEART_RATE, BLOOD_OXYGEN, PRESSURE}
 

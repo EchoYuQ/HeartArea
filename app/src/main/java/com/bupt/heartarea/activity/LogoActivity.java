@@ -81,7 +81,7 @@ public class LogoActivity extends Activity {
 //                        Toast.makeText(LogoActivity.this,responseBean.toString(),Toast.LENGTH_LONG).show();
                         if (responseBean.getCode() == 0) {
                             // 跳转到主界面
-                            startActivity(new Intent(LogoActivity.this, MainActivity.class));
+//                            startActivity(new Intent(LogoActivity.this, MainActivity.class));
                             String jsonString =  responseBean.getBody();
                             try {
                                 JSONObject jsonObject = new JSONObject(jsonString);
@@ -95,14 +95,28 @@ public class LogoActivity extends Activity {
                                     GlobalData.birthday=(jsonObject.getString("birthday"));
                                 if (jsonObject.has("tel"))
                                     GlobalData.tel=(jsonObject.getString("tel"));
+                                if (jsonObject.has("iscompletedinfo"))
+                                    GlobalData.is_complete_info=(jsonObject.getInt("iscompletedinfo"));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+
+                            if (GlobalData.is_complete_info==1)
+                            {
+                                // 到主界面
+                                Intent intent = new Intent(LogoActivity.this, MainActivity.class);
+                                startActivity(intent);
+                            }else
+                            {
+                                Intent intent = new Intent(LogoActivity.this, CompleteInformationActivity.class);
+                                startActivity(intent);
+                            }
+                            finish();
                         } else {
                             // 跳转到登录界面
                             startActivity(new Intent(LogoActivity.this, LoginActivity.class));
+                            finish();
                         }
-                        finish();
                     }
                 }, new Response.ErrorListener() {
             @Override

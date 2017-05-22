@@ -29,6 +29,7 @@ import com.bupt.heartarea.fragment.NewsFragment;
 import com.bupt.heartarea.ui.AlphaIndicator;
 import com.bupt.heartarea.ui.AlphaView;
 import com.bupt.heartarea.fragment.HistroyFragment;
+import com.bupt.heartarea.utils.DownloadUtil;
 
 import net.lemonsoft.lemonhello.LemonHello;
 import net.lemonsoft.lemonhello.LemonHelloAction;
@@ -71,6 +72,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         //        mainAdapter=new MainAdapter(getSupportFragmentManager());
 
         initEvent();
+
+
     }
 
 

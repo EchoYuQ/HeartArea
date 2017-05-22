@@ -15,42 +15,9 @@ public class CalHeartRate {
      * @return 峰值下标列表
      */
     public static List<Integer> findPeaks(double[] datas) {
-        List<Integer> list = new ArrayList<Integer>();
-        int last_index = Integer.MIN_VALUE;
+        List<Integer> list = new ArrayList<>();
+        int last_index = -100;
         int length = datas.length;
-//        for (int i = 1; i < length - 4; i++) {
-//            if (datas[i] > datas[i - 1] && datas[i] > datas[i + 1]) {
-//                if (i + 2 < length) {
-//                    if (datas[i] > datas[i + 2]) {
-////                        if(calDiff(datas[i-2],datas[i-1],datas[i+1],datas[i+2])<0)
-////                        {
-////                            list.add(i);
-////                        }
-//
-//                        if (i + 3 < length) {
-//                            if (datas[i] > datas[i + 3]) {
-//                                if (i + 4 < length) {
-//                                    if (datas[i] > datas[i + 4]) {
-//                                        list.add(i);
-//                                    }
-//                                } else {
-//                                    list.add(i);
-//                                }
-//
-//                            }
-//                        } else {
-//                            list.add(i);
-//                        }
-//
-//                    }
-//                } else {
-//                    list.add(i);
-//                }
-//
-//            }
-//
-//
-//        }
 
         for (int i = 1; i < length - 8; i++) {
             if (datas[i] > datas[i - 1] && datas[i] > datas[i + 1]
@@ -189,8 +156,5 @@ public class CalHeartRate {
         return rrList;
     }
 
-    public static double calDiff(double x1, double x2, double x3, double x4) {
-        return x3 + 2 * x4 - x2 - 2 * x1;
-    }
 
 }

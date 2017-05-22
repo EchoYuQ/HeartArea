@@ -38,13 +38,24 @@ import com.bupt.heartarea.utils.Tools;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import cn.aigestudio.datepicker.cons.DPMode;
 import cn.aigestudio.datepicker.views.DatePicker;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+
+import static java.lang.String.valueOf;
+import static okhttp3.MultipartBody.FORM;
 
 
 public class MyInformationActivity extends Activity implements View.OnClickListener {
@@ -77,6 +88,8 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
     // 用户缓存
     private SharedPreferences preferences;
     private static final String URL_CHANGE_INFORMATION = GlobalData.URL_HEAD + ":8080/detect3/ChangeServlet";
+    // 上传用户头像的url
+    private static final String URL_IMAGE_HEAD = GlobalData.URL_HEAD + ":8080/detect3/HeadIconServlet";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,10 +109,17 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
 
     private void initView() {
         mHeadPicture = (ImageView) findViewById(R.id.id_iv_headpicture_change_information);
-        Bitmap photo = FileUtil.readImageFromLocal(mContext, GlobalData.getTel() + "photo.png");
+
+        String filepath = Environment.getExternalStorageDirectory() + "/download/" + getPhotoFileName();
+        Log.i("filepath", filepath);
+        Bitmap photo = FileUtil.readImageFromLocal(filepath);
+//        Bitmap photo = FileUtil.readImageFromLocal(mContext, getPhotoName());
         if (photo != null) {
             mHeadPicture.setImageBitmap(photo);
+        } else {
+            mHeadPicture.setImageResource(R.drawable.user_image);
         }
+
         mBackIcon = (ImageView) findViewById(R.id.id_iv_back);
         mEtName = (EditText) findViewById(R.id.id_et_name_change_information);
         mEtEmail = (EditText) findViewById(R.id.id_et_email_value);
@@ -157,7 +177,33 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
                     Toast.makeText(MyInformationActivity.this, "请选择您的生日", Toast.LENGTH_SHORT).show();
                     break;
                 }
+
+
                 saveToSever();
+                final HashMap<String, String> params = new HashMap<>();
+                params.put("userid", GlobalData.userid + "");
+
+                final File file = new File(mContext.getExternalFilesDir(""), getPhotoFileName());
+                Log.i("File", mContext.getExternalFilesDir("") + "");
+//                filesDir = mContext.getExternalFilesDir("");
+//                /storage/emulated/0/Android/data/com.bupt.heartarea/files
+
+
+                String oldpath = mContext.getExternalFilesDir("") + "/" + getPhotoFileName();
+                String newpath = Environment.getExternalStorageDirectory() + "/download/" + getPhotoFileName();
+                Log.i("oldpath", oldpath);
+                Log.i("newpath", newpath);
+                // 拷贝头像
+                FileUtil.copyFile(oldpath, newpath);
+                // 向服务器上传头像
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        saveFileToServer(URL_IMAGE_HEAD, params, file);
+
+                    }
+                }).start();
+
                 break;
             case R.id.id_rl_birthday:
                 showDatePickerDialog1();
@@ -179,7 +225,8 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "'img'_yyyyMMdd_HHmmss");
 
-        return dateFormat.format(date) + ".jpg";
+
+        return GlobalData.userid + ".jpg";
     }
 
     /**
@@ -215,7 +262,7 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
         if (extras != null) {
             Bitmap photo = extras.getParcelable("data");
             mHeadPicture.setImageBitmap(photo);
-            FileUtil.saveImageToLocal(MyInformationActivity.this, photo, GlobalData.getTel() + "photo.png");
+            FileUtil.saveImageToLocal(MyInformationActivity.this, photo, getPhotoFileName());
         }
     }
 
@@ -351,9 +398,64 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
         dialog.getWindow().setGravity(Gravity.CENTER);
     }
 
+    /**
+     * 向服务器上传用户的信息数据
+     */
     private void saveToSever() {
         RequestQueue queue = Volley.newRequestQueue(mContext);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_CHANGE_INFORMATION, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                Gson gson = new Gson();
+
+                ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
+                if (responseBean != null) {
+                    if (responseBean.getCode() == 0) {
+                        GlobalData.username = mName;
+                        GlobalData.sex = (mSex_Int);
+                        GlobalData.email = (mEmail);
+                        GlobalData.birthday = (mTvBirthday.getText().toString().trim());
+                        Toast.makeText(mContext, "修改成功", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(mContext, "请求服务器错误", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+
+                mName = mEtName.getText().toString();
+                mEmail = mEtEmail.getText().toString();
+                HashMap<String, String> map = new HashMap<>();
+                map.put("userid", GlobalData.getUserid());
+                map.put("username", mName);
+                map.put("sex", String.valueOf(mSex_Int));
+                map.put("email", mEmail);
+                map.put("birthday", mTvBirthday.getText().toString().trim());
+                map.put("identification", "");
+                Log.i("Information Params", map.toString());
+                return map;
+            }
+        };
+        queue.add(stringRequest);
+
+
+    }
+
+    /**
+     * 向服务器上传用户的信息数据
+     */
+    private void saveToSeverTest() {
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://10.108.224.93:8080/detect3/HeadIconServlet", new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
                 Gson gson = new Gson();
@@ -430,6 +532,61 @@ public class MyInformationActivity extends Activity implements View.OnClickListe
     }
 
 
+    /**
+     * 向服务器上传用户头像
+     *
+     * @param url
+     * @param map
+     * @param file
+     */
+    protected void saveFileToServer(final String url, final Map<String, String> map, File file) {
+        OkHttpClient client = new OkHttpClient();
+        // form 表单形式上传
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(FORM);
+        if (file != null) {
+            // MediaType.parse() 里面是上传的文件类型。
+            RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+            String filename = file.getName();
+            // 参数分别为， 请求key ，文件名称 ， RequestBody
+            requestBody.addFormDataPart("icon", file.getName(), body);
+        }
+        if (map != null) {
+            // map 里面是请求中所需要的 key 和 value
+            for (Map.Entry entry : map.entrySet()) {
+                requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
+            }
+        }
+
+
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(url).post(requestBody.build())
+                .tag(getApplicationContext())
+                .build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i("saveFileToServer", "onFailure()" + e);
+
+            }
+
+            @Override
+            public void onResponse(Call call, okhttp3.Response response) throws IOException {
+
+                if (response.isSuccessful()) {
+                    Log.i("response", response + "");
+                    String str = response.body().string();
+                    Log.i("saveFileToServer", response.message() + " , body " + str);
+
+                } else {
+                    Log.i("saveFileToServer", response.message() + " error : body " + response.body().string());
+                }
+            }
+
+
+        });
+
+    }
 }
 
 

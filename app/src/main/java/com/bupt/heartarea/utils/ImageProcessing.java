@@ -74,15 +74,7 @@ public abstract class ImageProcessing {
 
         }
 
-        // 计算灰度值平均值算法
-        /*for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-				int index=i+j*width;
-				int tempV=yuv420sp[index]&0xff;
-				sum+=tempV;
-			}
-		}*/
-//        Log.i("value sum", sum + "");
+
         res[0] = sum;
         res[1] = sum1;
         res[2] = sum2;

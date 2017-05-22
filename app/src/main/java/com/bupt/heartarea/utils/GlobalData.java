@@ -11,9 +11,11 @@ import java.util.List;
  */
 public class GlobalData {
 
-    public static String select_date="";
-    public static int is_complete_info=0;
-    public static String userid="2";
+    public static String select_date = "";
+    public static int is_complete_info = 0;
+    // 当前测量状态 0：静息 1：运动后
+    public static int measure_state = 0;
+    public static String userid = "2";
     public static String sid;
     public static final String URL_HEAD = "http://47.92.80.155";
     public static String tel;
@@ -36,9 +38,9 @@ public class GlobalData {
                     MeasureType.HEART_RATE, MeasureType.BLOOD_OXYGEN, MeasureType.PRESSURE
             };
 
-    public static MeasureType currenttype=MeasureType.HEART_RATE;
+    public static MeasureType currenttype = MeasureType.HEART_RATE;
 
-    public static List<HistoryDataItemBean> historyDataItemBeanList=new ArrayList<>();
+    public static List<HistoryDataItemBean> historyDataItemBeanList = new ArrayList<>();
 
     public static String getUserid() {
         return userid;

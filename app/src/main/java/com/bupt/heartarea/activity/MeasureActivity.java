@@ -29,6 +29,7 @@ import com.android.volley.toolbox.Volley;
 import com.bupt.heartarea.bean.MeasureData;
 import com.bupt.heartarea.bean.ResponseBean;
 import com.bupt.heartarea.bean.UserDataBean;
+import com.bupt.heartarea.bloodpressure.BloodPressure;
 import com.bupt.heartarea.sg.SGFilter;
 import com.bupt.heartarea.ui.MySurfaceView;
 import com.bupt.heartarea.ui.ProgressWheel;
@@ -135,8 +136,8 @@ public class MeasureActivity extends Activity {
     private double YMIN = AXISYMIN;
     // 两帧图像的间隔时间，ms
     private static final int INTERVAL = 50;
-    private static final double AXISYMAX = 5;
-    private static final double AXISYMIN = 4;
+    private static final double AXISYMAX = 6;
+    private static final double AXISYMIN = 3.5;
     private static final int AXISXMAX = 6000 / INTERVAL;
 
     private UserDataBean mUserDataBean = new UserDataBean();
@@ -232,13 +233,14 @@ public class MeasureActivity extends Activity {
         List<Integer> rr = CalHeartRate.calRRInteval(peaksList,INTERVAL);
         System.out.println("实时心率RR间隔");
         System.out.println(rr);
+        // 判断寻峰时 峰与峰之间的间隔，如果超过了阈值范围，证明寻峰发生错误，重测
         if(rr!=null&&rr.size()>0)
         {
             int n = rr.size();
             int time0=rr.get(0);
             int time = rr.get(n - 1);
-            if (time0 < 500 || time0 > 1100) return false;
-            if (time < 500 || time > 1100) return false;
+            if (time0 < 500 || time0 > 1400) return false;
+            if (time < 500 || time > 1400) return false;
         }
         mRealTimeHeartRate = CalHeartRate.calHeartRate(peaksList, INTERVAL);
         Log.i("real time heartRate", mRealTimeHeartRate + "");
@@ -431,6 +433,7 @@ public class MeasureActivity extends Activity {
      */
     private void updateChart() {
 
+        System.out.println("执行updateChart()方法");
         //设置好下一个需要增加的节点
         //        addX = 0;
         //        addY = (int)(Math.random() * 90);
@@ -440,10 +443,13 @@ public class MeasureActivity extends Activity {
         int length = series.getItemCount();
 
         // 数据有效则添加，无效则清空数据集
-        // 另外R通道平均值在5.4以上
+        // 另外R通道平均值在5.0以上
+        Log.i("redvalue",redvalue+"");
+        Log.i("brightvalue",brightvalue+"");
         if (brightvalue < AXISYMAX && brightvalue > AXISYMIN && redvalue > 5.0) {
 
             count++;
+            Log.i("count",count+"");
             addX = AXISXMAX;
             addY = brightvalue;
             // 把数据添加到mDatas中，用来保存到文件中
@@ -540,7 +546,7 @@ public class MeasureActivity extends Activity {
                     // 以下是计算心率和RR间隔的代码
                     // 将源数据List转成数组
                     List<Double> data_origin_list = userDataBean.getDatas();
-                    double[] data_origin = new double[data_origin_list.size()];
+                    final double[] data_origin = new double[data_origin_list.size()];
                     for (int i = 0; i < data_origin_list.size(); i++) {
                         data_origin[i] = data_origin_list.get(i);
                     }
@@ -555,7 +561,7 @@ public class MeasureActivity extends Activity {
                     data_smoothed = new SGFilter(5, 5).smooth(data_smoothed, coeffs);
                     data_smoothed = new SGFilter(5, 5).smooth(data_smoothed, coeffs);
 
-                    // data_smoothed_list为SG算法处理前的值列表（去头去尾）
+                    // data_origin_list2（去头去尾）
                     List<Double> data_origin_list2 = new ArrayList<Double>();
                     // data_smoothed_list为SG算法处理后的值列表（去头去尾）
                     List<Double> data_smoothed_list = new ArrayList<Double>();
@@ -563,8 +569,19 @@ public class MeasureActivity extends Activity {
                         data_origin_list2.add(data_origin[i]);
                         data_smoothed_list.add(data_smoothed[i]);
                     }
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            BloodPressure bloodPressure=new BloodPressure(data_origin);
+                        }
+                    }).start();
+
+
+
                     Log.i("data_smoothed.length", data_smoothed.length + "");
-                    System.out.println(data_origin_list2);
+                    System.out.println("原始数据：");
+                    System.out.println(data_origin_list2 );
                     //                    System.out.println(data_smoothed_list);
                     // peaksList为峰的横坐标列表
                     List<Integer> peaksList = CalHeartRate.findPeaks(data_smoothed_list);
@@ -839,41 +856,56 @@ public class MeasureActivity extends Activity {
                         ResponseBean responseBean = gson.fromJson(response, ResponseBean.class);
 
                         // TODO: 2017/3/20 加一个GlobalData
+                        if (responseBean!=null)
+                        {
+                            if (responseBean.getCode() == 0) {
 
-                        if (responseBean.getCode() == 0) {
+                                String jsonString = responseBean.getBody();
+                                int pressure = 0;
+                                String ad = "";
+                                String alert = "";
 
-                            String jsonString = responseBean.getBody();
-                            int pressure = 0;
-                            String ad = "";
-                            String alert = "";
+                                try {
+                                    JSONObject jsonObject = new JSONObject(jsonString);
+                                    if (jsonObject.has("pressure")) {
+                                        pressure = (int) (jsonObject.getDouble("pressure"));
+                                    }
+                                    if (jsonObject.has("advice")) {
+                                        ad = jsonObject.getString("advice");
+                                    }
+                                    if (jsonObject.has("alert")) {
+                                        alert = jsonObject.getString("alert");
+                                    }
 
-                            try {
-                                JSONObject jsonObject = new JSONObject(jsonString);
-                                if (jsonObject.has("pressure")) {
-                                    pressure = (int) (jsonObject.getDouble("pressure"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                                if (jsonObject.has("advice")) {
-                                    ad = jsonObject.getString("advice");
-                                }
-                                if (jsonObject.has("alert")) {
-                                    alert = jsonObject.getString("alert");
-                                }
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                Intent intent = new Intent(MeasureActivity.this, ResultActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("pressure", pressure);
+                                bundle.putString("ad", ad);
+                                bundle.putString("alert", alert);
+                                bundle.putInt("heart_rate", mHeartRate);
+                                bundle.putInt("blood_oxygen", mBloodOxygen);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                                finish();
                             }
-
+                        }else
+                        {
                             Intent intent = new Intent(MeasureActivity.this, ResultActivity.class);
                             Bundle bundle = new Bundle();
-                            bundle.putInt("pressure", pressure);
-                            bundle.putString("ad", ad);
-                            bundle.putString("alert", alert);
+                            bundle.putInt("pressure", 0);
+                            bundle.putString("ad", "");
+                            bundle.putString("alert", "");
                             bundle.putInt("heart_rate", mHeartRate);
                             bundle.putInt("blood_oxygen", mBloodOxygen);
                             intent.putExtras(bundle);
                             startActivity(intent);
                             finish();
                         }
+
 
                     }
                 }, new Response.ErrorListener() {

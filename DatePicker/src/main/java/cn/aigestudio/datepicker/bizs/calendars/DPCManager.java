@@ -2,15 +2,15 @@ package cn.aigestudio.datepicker.bizs.calendars;
 
 import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import cn.aigestudio.datepicker.entities.DPInfo;
-import cn.aigestudio.datepicker.views.DatePicker;
+
 
 /**
  * 日期管理器
@@ -27,6 +27,14 @@ public final class DPCManager {
     private static final HashMap<String, Set<String>> DECOR_CACHE_TR = new HashMap<>();
     private static final HashMap<String, Set<String>> DECOR_CACHE_L = new HashMap<>();
     private static final HashMap<String, Set<String>> DECOR_CACHE_R = new HashMap<>();
+
+
+    private List<String> selDateList = new ArrayList<String>(); //选中的日期只有几号
+
+    public List<String> getSelDateList() {
+        return selDateList;
+    }
+
 
     private static DPCManager sManager;
 
@@ -167,6 +175,10 @@ public final class DPCManager {
             }
             days.add(str.substring(index + 1, str.length()));
             cache.put(key, days);
+
+            String tempStr = str.substring(index + 1, str.length());
+
+            selDateList.add(tempStr);
         }
     }
 
@@ -220,5 +232,16 @@ public final class DPCManager {
             }
         }
         return info;
+    }
+
+    public void clearnDATE_CACHE(){
+        DATE_CACHE.clear();
+        DECOR_CACHE_BG.clear();
+        DECOR_CACHE_TL.clear();
+        DECOR_CACHE_T.clear();
+        DECOR_CACHE_TR.clear();
+        DECOR_CACHE_L.clear();
+        DECOR_CACHE_R.clear();
+        selDateList.clear();
     }
 }

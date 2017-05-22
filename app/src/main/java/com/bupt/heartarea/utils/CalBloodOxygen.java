@@ -5,8 +5,13 @@ import java.util.List;
 public class CalBloodOxygen {
 
 
+    /**
+     * 计算血氧值
+     * @param RED 获取的R通道值数组
+     * @param IR  获取的B通道值数组
+     * @return
+     */
     public static double SpO2(double[] RED, double[] IR) {
-        System.out.println("starg");
 
         int fs = 20;
         int N = 128;

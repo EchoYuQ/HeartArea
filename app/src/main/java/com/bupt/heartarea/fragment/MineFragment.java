@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -194,7 +195,10 @@ public class MineFragment extends Fragment {
 
     @Override
     public void onResume() {
-        Bitmap photo = FileUtil.readImageFromLocal(mContext, GlobalData.getTel() + "photo.png");
+        String filepath= Environment.getExternalStorageDirectory()+"/download/"+getPhotoName();
+        Log.i("filepath",filepath);
+        Bitmap photo = FileUtil.readImageFromLocal(filepath);
+//        Bitmap photo = FileUtil.readImageFromLocal(mContext, getPhotoName());
         if (photo != null) {
             mIvUimage.setImageBitmap(photo);
         } else {
@@ -204,6 +208,11 @@ public class MineFragment extends Fragment {
         mTvName.setText(GlobalData.username);
         Log.i("GlobalData.username",GlobalData.username);
         super.onResume();
+    }
+
+    private String getPhotoName()
+    {
+        return GlobalData.userid+".jpg";
     }
 }
 

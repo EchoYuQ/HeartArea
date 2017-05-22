@@ -8,6 +8,7 @@ package cn.aigestudio.datepicker.bizs.themes;
  * @author AigeStudio 2015-06-17
  */
 public class DPBaseTheme extends DPTheme {
+//    public static
     @Override
     public int colorBG() {
         return 0xFFFFFFFF;

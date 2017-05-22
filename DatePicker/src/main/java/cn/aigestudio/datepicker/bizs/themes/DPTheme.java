@@ -10,6 +10,11 @@ package cn.aigestudio.datepicker.bizs.themes;
  * @author AigeStudio 2015-06-30
  */
 public abstract class DPTheme {
+
+    public static final String RED="#ffda3e3e";
+    public static final String RED_BACKGROUND="#1ef57667";
+//    public static final int RED=
+//    public static final int RED=
     /**
      * 月视图背景色
      * 

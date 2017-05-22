@@ -164,6 +164,11 @@ public class DatePicker extends LinearLayout {
                 }
                 tvYear.setText(tmp);
             }
+
+            @Override
+            public void onAllChange(int year, int month) {
+
+            }
         });
         addView(monthView, llParams);
     }

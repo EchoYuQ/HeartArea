@@ -1,10 +1,13 @@
 package com.bupt.heartarea.activity;
 
 import android.app.Activity;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,12 +23,22 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bupt.heartarea.bean.ResponseBean;
+import com.bupt.heartarea.utils.DownloadUtil;
 import com.bupt.heartarea.utils.GlobalData;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,8 +55,12 @@ public class LoginActivity extends Activity {
     private String str_json;
 
     // 对端口号和URI的定义
-    private static final String URL_LOGIN = GlobalData.URL_HEAD+":8080/detect3/LoginServlet";
-//    private static final String URL_LOGIN = "http://10.108.224.77:8080/detect3/LoginServlet";
+    private static final String URL_LOGIN = GlobalData.URL_HEAD + ":8080/detect3/LoginServlet";
+
+    private static final String URL_HEAD_IMAGE = "http://img04.tooopen.com/images/20130701/tooopen_10055061.jpg";
+    // 用户头像的url
+    private String mUrlHeadImage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,52 +89,6 @@ public class LoginActivity extends Activity {
                             Toast.LENGTH_LONG).show();
                 } else {
                     login();
-//                    if (!NetworkUtil.isNetworkAvailable(LoginActivity.this)) {
-//                        Toast.makeText(LoginActivity.this, "访问服务器失败，请检查网络",
-//                                Toast.LENGTH_LONG).show();
-//                    } else {
-                    // 用MyJsonParser类中的parserForLoginNormal()方法解析JSON字符串
-                    // 返回实体类LoginInfo
-                    // parserForLoginNormal()方法详情请见MyJsonParser.class
-//                        str_json = invokeLoginAPI();// 调用LoginAPI，服务器返回JSON字符串
-//                        loginInfo = new MyJsonParser(str_json)
-//                                .parserForLoginNormal();
-//                        switch (loginInfo.getCode()) {
-//                            case 0:
-//                                Toast.makeText(LoginActivity.this, "登录成功",
-//                                        Toast.LENGTH_LONG).show();
-////                                System.out.println(loginInfo.toString());
-////                                GlobalData.setUserid(loginInfo.getId());
-////                                GlobalData.setSid(loginInfo.getSid());
-////
-////                                // 创建一个Intent实例，该Intent主要实现从该Activity到ChooseFunctionActivity的跳转
-////                                Intent it_toChoFuncActivity = new Intent(
-////                                        LoginActivity.this,
-////                                        ChooseFunctionActivity.class);
-////                                // startActivity方法激活该Intent实现跳转
-////                                startActivity(it_toChoFuncActivity);
-//                                break;
-//                            case 20000:
-//                                Toast.makeText(LoginActivity.this, "登录被锁定, 失败次数过多",
-//                                        Toast.LENGTH_LONG).show();
-//                                break;
-//                            case 20001:
-//                                Toast.makeText(LoginActivity.this, "用户不存在",
-//                                        Toast.LENGTH_LONG).show();
-//                                break;
-//                            case 20005:
-//                                Toast.makeText(LoginActivity.this, "密码验证错误",
-//                                        Toast.LENGTH_LONG).show();
-//                                break;
-//                            case 20016:
-//                                Toast.makeText(LoginActivity.this, "该账户已被禁用",
-//                                        Toast.LENGTH_LONG).show();
-//                                break;
-//                            default:
-//                                Toast.makeText(LoginActivity.this, "登录失败" + loginInfo.getCode(),
-//                                        Toast.LENGTH_LONG).show();
-//                                break;
-//                        }
 
                 }
 
@@ -154,7 +125,6 @@ public class LoginActivity extends Activity {
     }
 
 
-
     void login() {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
 
@@ -173,49 +143,79 @@ public class LoginActivity extends Activity {
 
                         // TODO: 2017/3/20 加一个GlobalData
 
-                        if (responseBean!=null)
-                        {
+                        if (responseBean != null) {
                             if (responseBean.getCode() == 0) {
                                 // 保存账号密码
                                 saveAccountAndPwd();
 
-                                String jsonString =  responseBean.getBody();
+                                String jsonString = responseBean.getBody();
                                 try {
                                     JSONObject jsonObject = new JSONObject(jsonString);
                                     if (jsonObject.has("username"))
-                                        GlobalData.username=jsonObject.getString("username");
+                                        GlobalData.username = jsonObject.getString("username");
                                     if (jsonObject.has("userid"))
-                                        GlobalData.userid=(jsonObject.getString("userid"));
+                                        GlobalData.userid = (jsonObject.getString("userid"));
                                     if (jsonObject.has("sex"))
-                                        GlobalData.sex=(jsonObject.getInt("sex"));
+                                        GlobalData.sex = (jsonObject.getInt("sex"));
                                     if (jsonObject.has("birthday"))
-                                        GlobalData.birthday=(jsonObject.getString("birthday"));
+                                        GlobalData.birthday = (jsonObject.getString("birthday"));
                                     if (jsonObject.has("tel"))
-                                        GlobalData.tel=(jsonObject.getString("tel"));
+                                        GlobalData.tel = (jsonObject.getString("tel"));
                                     if (jsonObject.has("iscompletedinfo"))
-                                        GlobalData.is_complete_info=(jsonObject.getInt("iscompletedinfo"));
+                                        GlobalData.is_complete_info = (jsonObject.getInt("iscompletedinfo"));
+                                    if (jsonObject.has("icon")) {
+                                        mUrlHeadImage = (jsonObject.getString("icon"));
+                                        if (mUrlHeadImage != null && !mUrlHeadImage.trim().equals("")) {
+                                            final String url_headimage = GlobalData.URL_HEAD + mUrlHeadImage;
+                                            final String filename = GlobalData.userid + ".jpg";
+                                            new Thread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    DownloadUtil.get().downloadFile(url_headimage, filename, "download", new DownloadUtil.OnDownloadListener() {
+                                                        @Override
+                                                        public void onDownloadSuccess() {
+                                                            Log.i("下载图片完成", "下载图片完成");
+
+                                                        }
+
+                                                        @Override
+                                                        public void onDownloading(int progress) {
+//                                        progressBar.setProgress(progress);
+                                                        }
+
+                                                        @Override
+                                                        public void onDownloadFailed() {
+                                                            Log.i("下载图片失败", "下载图片失败");
+
+
+                                                        }
+                                                    });
+                                                }
+                                            }).start();
+
+                                        }
+
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
 
-                                if (GlobalData.is_complete_info==1)
-                                {
+                                if (GlobalData.is_complete_info == 1) {
                                     // 到主界面
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
-                                }else
-                                {
+                                } else {
                                     Intent intent = new Intent(LoginActivity.this, CompleteInformationActivity.class);
                                     startActivity(intent);
                                 }
                                 finish();
+
+
                             }
-                        }else
-                        {
+                        } else {
                             Toast.makeText(LoginActivity.this, "连接服务器失败，请检查网络", Toast.LENGTH_SHORT).show();
 
                         }
-
 
 
                     }
@@ -231,8 +231,8 @@ public class LoginActivity extends Activity {
                 //在这里设置需要post的参数
                 Map<String, String> map = new HashMap<String, String>();
                 map.put("phone", str_name);
-                map.put("tel",str_name);
-                map.put("password",str_pwd);
+                map.put("tel", str_name);
+                map.put("password", str_pwd);
 
 //                map.put("phone", str_name);
 //                map.put("password", str_pwd);
@@ -259,3 +259,6 @@ public class LoginActivity extends Activity {
 
 
 }
+
+
+

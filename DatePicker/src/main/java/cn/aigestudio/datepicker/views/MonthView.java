@@ -60,6 +60,7 @@ public class MonthView extends View {
     private AccelerateInterpolator accelerateInterpolator = new AccelerateInterpolator();
     private OnDateChangeListener onDateChangeListener;
     private DatePicker.OnDatePickedListener onDatePickedListener;
+    private OnDateScrollChangeListener onDateScrollChangeListener; //新加的滑动方向判断 目前没卵用  加着玩
     private ScaleAnimationListener scaleAnimationListener;
 
     private DPMode mDPMode = DPMode.MULTIPLE;
@@ -84,10 +85,15 @@ public class MonthView extends View {
     private float offsetYFestival1, offsetYFestival2;
 
     private boolean isNewEvent,
-            isFestivalDisplay = false,
-            isHolidayDisplay = false,
+            isFestivalDisplay = true,
+            isHolidayDisplay = true,
             isTodayDisplay = true,
-            isDeferredDisplay = false;
+            isDeferredDisplay = true;
+
+    private boolean isScroll = true; //是否允许滑动
+
+    private boolean isSelChangeColor = false; //选中的日期画笔是否变色
+    private int selChangeTextColor = mTManager.colorG();
 
     private Map<String, BGCircle> cirApr = new HashMap<>();
     private Map<String, BGCircle> cirDpr = new HashMap<>();
@@ -143,63 +149,81 @@ public class MonthView extends View {
                         isNewEvent = false;
                     }
                 }
-                if (mSlideMode == SlideMode.HOR) {
-                    int totalMoveX = (int) (lastPointX - event.getX()) + lastMoveX;
-                    smoothScrollTo(totalMoveX, indexYear * height);
-                } else if (mSlideMode == SlideMode.VER) {
-                    int totalMoveY = (int) (lastPointY - event.getY()) + lastMoveY;
-                    smoothScrollTo(width * indexMonth, totalMoveY);
+                if(isScroll){
+                    if (mSlideMode == SlideMode.HOR) {
+                        int totalMoveX = (int) (lastPointX - event.getX()) + lastMoveX;
+                        smoothScrollTo(totalMoveX, indexYear * height);
+                    } else if (mSlideMode == SlideMode.VER) {
+                        int totalMoveY = (int) (lastPointY - event.getY()) + lastMoveY;
+                        smoothScrollTo(width * indexMonth, totalMoveY);
+                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (mSlideMode == SlideMode.VER) {
-                    if (Math.abs(lastPointY - event.getY()) > 25) {
-                        if (lastPointY < event.getY()) {
-                            if (Math.abs(lastPointY - event.getY()) >= criticalHeight) {
-                                indexYear--;
-                                centerYear = centerYear - 1;
+                if(isScroll){
+                    if (mSlideMode == SlideMode.VER) {
+                        if (Math.abs(lastPointY - event.getY()) > 25) {
+                            if (lastPointY < event.getY()) {
+                                if (Math.abs(lastPointY - event.getY()) >= criticalHeight) {
+                                    indexYear--;
+                                    centerYear = centerYear - 1;
+
+                                    if(null!=onDateScrollChangeListener){
+                                        onDateScrollChangeListener.scrollBottom(centerYear,centerMonth);
+                                    }
+                                }
+                            } else if (lastPointY > event.getY()) {
+                                if (Math.abs(lastPointY - event.getY()) >= criticalHeight) {
+                                    indexYear++;
+                                    centerYear = centerYear + 1;
+
+                                    if(null!=onDateScrollChangeListener){
+                                        onDateScrollChangeListener.scrollTop(centerYear, centerMonth);
+                                    }
+                                }
                             }
-                        } else if (lastPointY > event.getY()) {
-                            if (Math.abs(lastPointY - event.getY()) >= criticalHeight) {
-                                indexYear++;
-                                centerYear = centerYear + 1;
-                            }
+                            buildRegion();
+                            computeDate();
+                            smoothScrollTo(width * indexMonth, height * indexYear);
+                            lastMoveY = height * indexYear;
+                        } else {
+                            defineRegion((int) event.getX(), (int) event.getY());
                         }
-                        buildRegion();
-                        computeDate();
-                        smoothScrollTo(width * indexMonth, height * indexYear);
-                        lastMoveY = height * indexYear;
+                    } else if (mSlideMode == SlideMode.HOR) {
+                        if (Math.abs(lastPointX - event.getX()) > 25) {
+                            if (lastPointX > event.getX() &&
+                                    Math.abs(lastPointX - event.getX()) >= criticalWidth) {
+                                indexMonth++;
+                                centerMonth = (centerMonth + 1) % 13;
+                                if (centerMonth == 0) {
+                                    centerMonth = 1;
+                                    centerYear++;
+                                }
+                                if(null!=onDateScrollChangeListener){
+                                    onDateScrollChangeListener.scrollLeft(centerYear, centerMonth);
+                                }
+                            } else if (lastPointX < event.getX() &&
+                                    Math.abs(lastPointX - event.getX()) >= criticalWidth) {
+                                indexMonth--;
+                                centerMonth = (centerMonth - 1) % 12;
+                                if (centerMonth == 0) {
+                                    centerMonth = 12;
+                                    centerYear--;
+                                }
+                                if(null!=onDateScrollChangeListener){
+                                    onDateScrollChangeListener.scrollRight(centerYear,centerMonth);
+                                }
+                            }
+                            buildRegion();
+                            computeDate();
+                            smoothScrollTo(width * indexMonth, indexYear * height);
+                            lastMoveX = width * indexMonth;
+                        } else {
+                            defineRegion((int) event.getX(), (int) event.getY());
+                        }
                     } else {
                         defineRegion((int) event.getX(), (int) event.getY());
                     }
-                } else if (mSlideMode == SlideMode.HOR) {
-                    if (Math.abs(lastPointX - event.getX()) > 25) {
-                        if (lastPointX > event.getX() &&
-                                Math.abs(lastPointX - event.getX()) >= criticalWidth) {
-                            indexMonth++;
-                            centerMonth = (centerMonth + 1) % 13;
-                            if (centerMonth == 0) {
-                                centerMonth = 1;
-                                centerYear++;
-                            }
-                        } else if (lastPointX < event.getX() &&
-                                Math.abs(lastPointX - event.getX()) >= criticalWidth) {
-                            indexMonth--;
-                            centerMonth = (centerMonth - 1) % 12;
-                            if (centerMonth == 0) {
-                                centerMonth = 12;
-                                centerYear--;
-                            }
-                        }
-                        buildRegion();
-                        computeDate();
-                        smoothScrollTo(width * indexMonth, indexYear * height);
-                        lastMoveX = width * indexMonth;
-                    } else {
-                        defineRegion((int) event.getX(), (int) event.getY());
-                    }
-                } else {
-                    defineRegion((int) event.getX(), (int) event.getY());
                 }
                 break;
         }
@@ -225,8 +249,8 @@ public class MonthView extends View {
         int cellH5 = (int) (h / 5F);
         int cellH6 = (int) (h / 6F);
 
-        // 背景圆圈的大小
         circleRadius = (int)((float)cellW/1.4f);
+//        circleRadius = cellW;
 
         animZoomOut1 = (int) (cellW * 1.2F);
         animZoomIn1 = (int) (cellW * 0.8F);
@@ -277,7 +301,6 @@ public class MonthView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawColor(mTManager.colorBG());
-//        canvas.drawColor(DPTManager.GREEN);
 
         draw(canvas, width * indexMonth, (indexYear - 1) * height, topYear, topMonth);
         draw(canvas, width * (indexMonth - 1), height * indexYear, leftYear, leftMonth);
@@ -346,6 +369,7 @@ public class MonthView extends View {
 
     private void drawBG(Canvas canvas, Rect rect, DPInfo info) {
         if (null != mDPDecor && info.isDecorBG) {
+//            LogUtils.e("drawBG===="+info.strG);
             mDPDecor.drawDecorBG(canvas, rect, mPaint,
                     centerYear + "-" + centerMonth + "-" + info.strG);
         }
@@ -374,12 +398,32 @@ public class MonthView extends View {
     }
 
     private void drawGregorian(Canvas canvas, Rect rect, String str, boolean isWeekend) {
+
+//        LogUtils.e("drawGregorian====" + str);
+//        LogUtils.e("getSelDatLIst====" + mCManager.getSelDateList().toString());
+
+
         mPaint.setTextSize(sizeTextGregorian);
-        if (isWeekend) {
+//        if (isWeekend) {
+//            mPaint.setColor(mTManager.colorWeekend());
+//        } else {
+//            mPaint.setColor(mTManager.colorG());
+//        }
+//        if(isSelChangeColor&&mCManager.getSelDateList().contains(str)){ //选中了变色
+//            mPaint.setColor(selChangeTextColor);
+//        }
+
+
+        if(isSelChangeColor&&mCManager.getSelDateList().contains(str)){ //选中了变色
+            mPaint.setColor(selChangeTextColor);
+        } else if (isWeekend) {
             mPaint.setColor(mTManager.colorWeekend());
-        } else {
+        }
+        else {
             mPaint.setColor(mTManager.colorG());
         }
+
+
         float y = rect.centerY();
         if (!isFestivalDisplay)
             y = rect.centerY() + Math.abs(mPaint.ascent()) - (mPaint.descent() - mPaint.ascent()) / 2F;
@@ -485,6 +529,11 @@ public class MonthView extends View {
         this.onDatePickedListener = onDatePickedListener;
     }
 
+
+    public void setOnDateScrollChangeListener(OnDateScrollChangeListener onDateScrollChangeListener) {
+        this.onDateScrollChangeListener = onDateScrollChangeListener;
+    }
+
     void setDPMode(DPMode mode) {
         this.mDPMode = mode;
     }
@@ -522,6 +571,15 @@ public class MonthView extends View {
 
     void setDeferredDisplay(boolean isDeferredDisplay) {
         this.isDeferredDisplay = isDeferredDisplay;
+    }
+
+    void setIsScroll(boolean isScroll){
+       this.isScroll = isScroll;
+    }
+
+    public void setIsSelChangeColor(boolean isSelChangeColor,int selChangeTextColor) {
+        this.isSelChangeColor = isSelChangeColor;
+        this.selChangeTextColor = selChangeTextColor;
     }
 
     private void smoothScrollTo(int fx, int fy) {
@@ -748,6 +806,7 @@ public class MonthView extends View {
         if (null != onDateChangeListener) {
             onDateChangeListener.onYearChange(centerYear);
             onDateChangeListener.onMonthChange(centerMonth);
+            onDateChangeListener.onAllChange(centerYear,centerMonth);
         }
     }
 
@@ -755,6 +814,16 @@ public class MonthView extends View {
         void onMonthChange(int month);
 
         void onYearChange(int year);
+
+        void onAllChange(int year, int month);
+    }
+
+    interface OnDateScrollChangeListener{
+        void scrollLeft(int year, int month); //往左边滑动 月份加一
+        void scrollRight(int year, int month); //往右边滑动 月份减一
+        void scrollTop(int year, int month); //往上边滑动 年份加一
+        void scrollBottom(int year, int month); //往下边滑动 年份加一
+
     }
 
     private enum SlideMode {
@@ -812,4 +881,6 @@ public class MonthView extends View {
             MonthView.this.invalidate();
         }
     }
+
+
 }

@@ -12,7 +12,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 2
-        versionName "1.0"
+        versionName "2.2"
     }
     buildTypes {
         release {
@@ -36,4 +36,5 @@ dependencies {
     //    compile 'com.github.1em0nsOft:LemonBubble4Android:1.0.9'
     compile files('libs/lemon-hello.jar')
     compile files('libs/lemon-bubble.jar')
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
 }

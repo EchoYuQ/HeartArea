@@ -67,8 +67,8 @@ import cn.aigestudio.datepicker.views.DatePicker2;
 public class MainPageFragment extends Fragment implements OnClickListener {
     private static final String URL_NEWS = "http://www.tngou.net/api/info/list?rows=3";
     private static final String URL_DETAILS = "http://www.tngou.net/info/show/";
-    private static final String URL_GETSIGNEDDATE = GlobalData.URL_HEAD+"";
-    private static final String URL_POSTSIGNEDDATE = GlobalData.URL_HEAD+"";
+    private static final String URL_GETSIGNEDDATE = GlobalData.URL_HEAD+":8080/detect3/SignInMonth";
+    private static final String URL_POSTSIGNEDDATE = GlobalData.URL_HEAD+":8080/detect3/SignIn";
     private View view;
     // 广告
     private ViewPager viewPager;
@@ -506,6 +506,8 @@ public class MainPageFragment extends Fragment implements OnClickListener {
                     public void onResponse(String s) {
                         Gson gson = new Gson();
 
+
+                        Log.d("onResponse",s);
                         ResponseBean responseBean = gson.fromJson(s, ResponseBean.class);
 
 
@@ -514,17 +516,19 @@ public class MainPageFragment extends Fragment implements OnClickListener {
                                 String jsonstr = responseBean.getBody();
                                 try {
                                     JSONObject jsonObject = new JSONObject(jsonstr);
-                                    if (jsonObject.has("signedDate")) {
-                                        String str = jsonObject.getString("signedDate");
-                                        String[] date_array = str.split(",");
+                                    if (jsonObject.has("signed_date")) {
+                                        String str = jsonObject.getString("signed_date").trim();
                                         mSignedDateList.clear();
-                                        for (int i = 0; i < date_array.length; i++) {
+                                        if(str!=null&&!str.equals(""))
+                                        {
+                                            String[] date_array = str.split(",");
+                                            for (int i = 0; i < date_array.length; i++) {
 
-                                            String[] temp = date_array[i].split("-");
-                                            // yyyy-MM-dd转成yyyy-M-d
-                                            mSignedDateList.add(temp[0] + "-" + Integer.parseInt(temp[1]) + "-" + Integer.parseInt(temp[2]));
+                                                String[] temp = date_array[i].split("-");
+                                                // yyyy-MM-dd转成yyyy-M-d
+                                                mSignedDateList.add(temp[0] + "-" + Integer.parseInt(temp[1]) + "-" + Integer.parseInt(temp[2]));
+                                            }
                                         }
-
                                         showSignDialog();
 
                                     }
